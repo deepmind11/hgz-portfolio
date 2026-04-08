@@ -20,6 +20,7 @@ pnpm-debug.log*
 
 # wrangler / cloudflare
 .wrangler/
+.wrangler-out/
 worker-configuration.d.ts
 
 # macOS-specific files
