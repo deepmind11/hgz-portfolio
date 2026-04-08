@@ -1,0 +1,65 @@
+---
+title: CovalentAgent
+slug: covalentagent
+tagline: Open-source multi-agent system for covalent drug design.
+description: The first open-source multi-agent system for covalent drug discovery. Orchestrates target analysis, warhead selection, molecule generation, and ADMET prediction across six specialist agents with full literature provenance.
+order: 2
+status: active
+featured: true
+github: https://github.com/deepmind11/CovalentAgent
+tech:
+  - LangGraph
+  - MCP (Model Context Protocol)
+  - ESM-2 (Meta)
+  - RDKit
+  - Chemprop
+  - ChromaDB
+  - FastAPI
+  - Streamlit
+  - Docker
+domain:
+  - Drug discovery
+  - Covalent chemistry
+  - Computational chemistry
+targetCompanies:
+  - Frontier Medicines
+  - Vividion Therapeutics
+  - Mirati Therapeutics
+  - Schrodinger
+  - Atomwise
+  - Genesis Therapeutics
+started: "2026-03-27"
+---
+
+## The problem
+
+Most AI-driven drug discovery tooling targets non-covalent binding. Covalent drugs — which form permanent bonds with their target proteins — represent a growing therapeutic class that includes blockbusters like osimertinib (Tagrisso) and sotorasib (Lumakras). Yet the open-source tooling for AI-powered covalent drug design is nearly nonexistent.
+
+CovalentAgent is the first open-source attempt to fill that gap.
+
+## The approach
+
+A LangGraph supervisor coordinates six specialist agents that mirror the covalent drug discovery workflow:
+
+| Agent | Responsibility | Models / tools |
+| --- | --- | --- |
+| **TargetAnalyst** | Identify reactive residues, score ligandability | ESM-2 protein language model |
+| **WarheadSelector** | Choose optimal warhead class for residue + pocket | Reactivity models + selection rules |
+| **MoleculeDesigner** | Scaffold generation with warhead attachment | RDKit + fragment-based design |
+| **PropertyPredictor** | ADMET, selectivity, drug-likeness | Chemprop message-passing NN |
+| **LiteratureRAG** | Citation-backed rationale | ChromaDB over CovPDB + PubMed |
+| **Reporter** | Ranked candidate report with provenance | Structured Pydantic output |
+
+Every design decision is grounded in literature. Every property prediction is reproducible. Every output ships with the SMILES, scores, and rationale needed for a chemist to act on it.
+
+## Data sources
+
+- **CovPDB** — Covalent protein-ligand complex database
+- **CysDB** — Cysteine chemoproteomics annotations
+- **ChEMBL** — Bioactivity data for covalent inhibitors
+- **PDB** — Protein structures
+- **PubMed** — Covalent drug design literature
+
+## Why this matters
+
+Frontier Medicines, Vividion, Mirati, and the rest of the covalent therapeutics ecosystem are looking for engineers who can build the AI infrastructure that scales their chemists' impact. CovalentAgent is a runnable proof that I understand the workflow from target ID through ADMET prediction, and that I can ship a multi-agent system that respects the way medicinal chemists actually evaluate covalent leads.

@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects"))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Harshit Ghosh">
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 grid-bg opacity-40"></div>
+    <div class="container-prose relative pt-20 pb-16 sm:pt-28 sm:pb-24">
+      <div class="max-w-3xl">
+        <div class="badge badge-accent mb-6">
+          <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--color-accent);"></span>
+          Open to bioinformatics + AI engineering roles
+        </div>
+
+        <h1 class="font-bold tracking-tight mb-6">
+          <span style="color: var(--color-fg);">I build </span>
+          <span style="color: var(--color-accent);">multi-agent AI systems</span>
+          <span style="color: var(--color-fg);"> for genomics, drug discovery, and clinical operations.</span>
+        </h1>
+
+        <p class="text-lg leading-relaxed mb-8 max-w-2xl" style="color: var(--color-fg-muted);">
+          Bioinformatics engineer with three years of production experience shipping
+          variant validation systems, genomics pipelines, and AWS Bedrock agents in a
+          CAP/CLIA oncology lab. Now building the open-source multi-agent infrastructure
+          for the next generation of clinical AI.
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="/projects" class="btn btn-primary">
+            See the projects
+            <span>→</span>
+          </a>
+          <a href="/about" class="btn btn-secondary">About me</a>
+          <a href="/contact" class="btn btn-secondary">Contact</a>
+        </div>
+
+        <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-mono" style="color: var(--color-fg-subtle);">
+          <span class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--color-accent);"></span>
+            Mountain View, CA
+          </span>
+          <span>·</span>
+          <span>Columbia MA Biotech</span>
+          <span>·</span>
+          <span>IIT Kanpur BS Chemistry</span>
+          <span>·</span>
+          <span>H-1B (transferable)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured projects -->
+  <section class="container-prose py-16">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <h2 class="font-semibold tracking-tight mb-2">Featured projects</h2>
+        <p style="color: var(--color-fg-muted);">
+          Multi-agent systems I've shipped or am actively building.
+        </p>
+      </div>
+      <a href="/projects" class="link-accent text-sm font-medium hidden sm:inline">
+        View all →
+      </a>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <!-- Capability strip -->
+  <section class="container-prose py-16">
+    <div class="surface p-8 sm:p-12">
+      <h2 class="font-semibold tracking-tight mb-8">What I can build for you</h2>
+      <div class="grid gap-6 sm:grid-cols-3">
+        <div>
+          <div class="text-3xl mb-2" style="color: var(--color-accent);">⌬</div>
+          <h3 class="font-semibold mb-1">Multi-agent systems</h3>
+          <p class="text-sm" style="color: var(--color-fg-muted);">
+            LangGraph orchestration, MCP tool servers, deterministic rule engines paired with LLM reasoning, full observability with Langfuse.
+          </p>
+        </div>
+        <div>
+          <div class="text-3xl mb-2" style="color: var(--color-accent);">⏣</div>
+          <h3 class="font-semibold mb-1">Bioinformatics infrastructure</h3>
+          <p class="text-sm" style="color: var(--color-fg-muted);">
+            Nextflow and Snakemake pipelines, AWS Batch and Lambda integration, PySAM and BAM-level analysis, CAP/CLIA-aware deployment.
+          </p>
+        </div>
+        <div>
+          <div class="text-3xl mb-2" style="color: var(--color-accent);">⌖</div>
+          <h3 class="font-semibold mb-1">FDE-grade integrations</h3>
+          <p class="text-sm" style="color: var(--color-fg-muted);">
+            Production code against clinical systems (LIMS, EHR, FHIR R4), Terraform deploys, eval harnesses gating CI, customer-deliverable CLIs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-prose py-16">
+    <div class="surface p-8 sm:p-12 text-center">
+      <h2 class="font-semibold tracking-tight mb-4">
+        Building something at the intersection of bioinformatics and AI?
+      </h2>
+      <p class="mb-6 max-w-xl mx-auto" style="color: var(--color-fg-muted);">
+        I'd love to hear about it. The fastest way to reach me is email — I usually reply within a day.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="mailto:harshitghosh@gmail.com" class="btn btn-primary">harshitghosh@gmail.com</a>
+        <a href="/contact" class="btn btn-secondary">All contact options</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

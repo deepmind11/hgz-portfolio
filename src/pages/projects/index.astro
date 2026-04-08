@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Projects"
+  description="Multi-agent AI systems for genomics, drug discovery, and clinical operations. Open source on GitHub."
+>
+  <section class="container-prose pt-16 pb-12">
+    <div class="max-w-2xl">
+      <h1 class="font-bold tracking-tight mb-4">Projects</h1>
+      <p class="text-lg leading-relaxed" style="color: var(--color-fg-muted);">
+        Multi-agent systems I've shipped or am actively building. Every project is open
+        source on GitHub. Each one targets a specific gap in the bioinformatics or
+        clinical AI ecosystem and ships with an eval harness, a CLI, and a deploy story.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-prose pb-16">
+    <div class="grid gap-5 sm:grid-cols-2">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+</BaseLayout>

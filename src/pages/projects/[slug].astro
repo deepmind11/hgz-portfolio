@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.data.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, tagline, description, github, demo, tech, domain, targetCompanies, status, started } = project.data;
+
+const statusColors = {
+  shipped: "var(--color-success)",
+  active: "var(--color-warning)",
+  concept: "var(--color-fg-subtle)",
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <article>
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 grid-bg opacity-40"></div>
+      <div class="container-prose relative pt-12 pb-10">
+        <a
+          href="/projects"
+          class="text-sm font-mono mb-6 inline-flex items-center gap-1 transition-colors"
+          style="color: var(--color-fg-muted);"
+        >
+          ← All projects
+        </a>
+
+        <div class="flex items-center gap-3 mb-4">
+          <span
+            class="text-xs font-mono uppercase tracking-wider flex items-center gap-1.5"
+            style={`color: ${statusColors[status]};`}
+          >
+            <span
+              class="w-1.5 h-1.5 rounded-full"
+              style={`background-color: ${statusColors[status]};`}
+            ></span>
+            {status}
+          </span>
+          <span class="text-xs font-mono" style="color: var(--color-fg-subtle);">
+            started {started}
+          </span>
+        </div>
+
+        <h1 class="font-bold tracking-tight mb-4">{title}</h1>
+
+        <p class="text-xl leading-relaxed mb-8 max-w-3xl" style="color: var(--color-fg-muted);">
+          {tagline}
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-8">
+          <a
+            href={github}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary"
+          >
+            View on GitHub
+            <span>↗</span>
+          </a>
+          {demo && (
+            <a href={demo} target="_blank" rel="noopener" class="btn btn-secondary">
+              Live demo ↗
+            </a>
+          )}
+          <a href="#try-it" class="btn btn-secondary">Try it locally</a>
+        </div>
+
+        <div class="flex flex-wrap gap-1.5">
+          {tech.map((t) => <span class="badge">{t}</span>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <div class="container-prose py-10">
+      <div class="grid gap-12 lg:grid-cols-[1fr_280px]">
+        <div class="prose">
+          <Content />
+
+          <h2 id="try-it">Try it locally</h2>
+          <p>
+            All four projects are open source. Clone the repo, install dependencies with
+            <code>uv sync</code>, drop your API keys into <code>.env</code>, and run the
+            CLI. The README walks you through each step.
+          </p>
+          <pre><code>git clone {github}.git
+cd {project.data.slug === "covalentagent" ? "CovalentAgent" : project.data.slug}
+uv sync
+cp .env.example .env  # add your keys
+uv run python -m {project.data.slug.replace(/-/g, "_")} --help</code></pre>
+
+          <p>
+            A live, hosted demo is coming in Phase 3 of this site — I'm wiring up
+            a Modal-backed sandbox so you can run a single canned input from your browser
+            without installing anything.
+          </p>
+        </div>
+
+        <aside class="space-y-6 lg:sticky lg:top-24 self-start">
+          <div class="surface p-5">
+            <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
+              Domain
+            </h3>
+            <ul class="space-y-1.5 text-sm">
+              {domain.map((d) => <li style="color: var(--color-fg);">{d}</li>)}
+            </ul>
+          </div>
+
+          <div class="surface p-5">
+            <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
+              Built for
+            </h3>
+            <ul class="space-y-1.5 text-sm">
+              {targetCompanies.slice(0, 6).map((c) => <li style="color: var(--color-fg);">{c}</li>)}
+            </ul>
+          </div>
+
+          <div class="surface p-5">
+            <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
+              Tech stack
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              {tech.map((t) => <span class="badge text-[10px]">{t}</span>)}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

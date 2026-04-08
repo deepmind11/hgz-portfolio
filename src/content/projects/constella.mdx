@@ -1,0 +1,62 @@
+---
+title: Constella
+slug: constella
+tagline: Polaris-style voice constellation with native English-Spanish code-switching.
+description: A miniature, runnable, evaluable Polaris-style safety constellation for voice-based healthcare AI agents. One stateful primary conversational agent flanked by four parallel specialist verifiers, built end-to-end on Microsoft VibeVoice for native intra-utterance code-switching support.
+order: 3
+status: active
+featured: true
+github: https://github.com/deepmind11/constella
+tech:
+  - Microsoft VibeVoice (ASR + TTS)
+  - Llama 3.1 70B + 8B (Groq)
+  - LangGraph
+  - Polaris-style constellation
+  - Python 3.11
+  - uv
+domain:
+  - Healthcare voice AI
+  - Bilingual / code-switching
+  - Patient safety
+  - Multi-agent verification
+targetCompanies:
+  - Hippocratic AI
+  - Polaris Health
+  - Abridge
+  - Ambience Healthcare
+  - Suki AI
+  - Nabla
+started: "2026-04-07"
+---
+
+## The problem
+
+I read the [Polaris paper](https://arxiv.org/abs/2403.13313) (Mukherjee et al., 2024) and the [WellSpan colorectal cancer screening study](https://www.medrxiv.org/content/10.1101/2024.12.16.24318586v1) (Bhimani and Baker, 2024) and noticed two things:
+
+1. **Polaris 3.0 reports 99.83% Spanish accuracy** and supports 14 languages with real-time multilingual auto-switch. Hippocratic AI's Spanish-language voice agent achieved a **2.6x higher FIT-test opt-in rate** among Spanish-speaking patients vs English-speaking patients in the WellSpan study. Bilingual healthcare AI is producing real clinical-economic impact, not just demos.
+2. **Intra-utterance code-switching** — where a bilingual patient mixes English and Spanish *within a single sentence* ("¿Tomo el inhaler dos veces al día, but only when I feel short of breath?") — is endemic in U.S. Latino patient populations, but I could not find an explicit treatment of it in any of the published Polaris papers.
+
+Around the same time, Microsoft released [VibeVoice](https://github.com/microsoft/VibeVoice), the first open-source ASR model that natively handles **code-switching across 50+ languages with no language parameter required**.
+
+I wanted to know: what happens if you build a Polaris-style constellation entirely on VibeVoice?
+
+## The approach
+
+Constella is the answer in a 2-day build. The architecture is one stateful primary conversational agent (Llama 3.1 70B as "Nurse Constella") flanked by four parallel specialist verifiers that fan out after every primary turn:
+
+| Specialist | Role | Model |
+| --- | --- | --- |
+| **Language** | Per-utterance language ID + intra-utterance code-switch segmentation. Routes downstream prompts to ES, EN, or MIX | Llama 3.1 8B (Groq) |
+| **Medication** | Verifies dosage, timing, contraindications against the patient's med list | Llama 3.1 8B (Groq) |
+| **Labs & Vitals** | Extracts numeric values from utterances ("My sugar was 240 this morning") and flags out-of-range | Llama 3.1 8B (Groq) |
+| **Escalation** | Detects red-flag symptoms (chest pain, severe hypoglycemia, DKA, suicidal ideation) and triggers human handoff | Llama 3.1 8B (Groq) |
+
+The orchestrator merges specialist verdicts before the primary's turn is emitted. If escalation fires, the call is hard-transferred. If a med error is detected, the turn is rewritten. Otherwise the response flows to VibeVoice TTS (~300ms first audible latency) and back to the patient.
+
+## Use case
+
+Post-discharge follow-up calls for a Type 2 diabetic patient who code-switches between English and Spanish. Narrow on purpose — the goal is to prove the architecture works on a clinically meaningful scenario, not to ship a general-purpose agent.
+
+## Why this matters
+
+Hippocratic AI, Polaris Health, and the rest of the healthcare voice AI ecosystem are pushing on Spanish coverage and patient safety verification. Constella is a runnable, evaluable, open-source proof that I understand both the safety architecture *and* the linguistic edge cases that show up in U.S. Latino patient populations. It's also the only public implementation of a Polaris-style constellation built end-to-end on VibeVoice that I'm aware of.

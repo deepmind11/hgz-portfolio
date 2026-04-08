@@ -1,0 +1,68 @@
+---
+title: VariantAgent
+slug: variantagent
+tagline: Multi-agent ACMG variant interpretation with full provenance.
+description: Multi-agent clinical variant interpretation system using LangGraph and MCP. Six specialized agents query ClinVar, gnomAD, Ensembl VEP, and PubMed, then apply ACMG/AMP classification criteria with chain-of-thought reasoning and produce structured reports with full evidence trails.
+order: 1
+status: shipped
+featured: true
+github: https://github.com/deepmind11/variantagent
+tech:
+  - LangGraph
+  - MCP (Model Context Protocol)
+  - Claude Sonnet 4.5
+  - FastAPI
+  - ChromaDB
+  - Pydantic v2
+  - pytest + VCR.py + deepeval
+  - LangSmith
+  - Python 3.11
+domain:
+  - Clinical genomics
+  - Variant interpretation
+  - ACMG / AMP guidelines
+targetCompanies:
+  - Tempus AI
+  - Color Health
+  - Variantyx
+  - GeneDx
+  - Invitae
+  - BillionToOne
+started: "2026-03-15"
+---
+
+## The problem
+
+A clinical variant interpretation analyst processes 50-200 variants per week. Each one needs:
+
+- Allele frequency lookups across population databases (gnomAD, ExAC)
+- Pathogenicity evidence from ClinVar
+- Functional predictions (Ensembl VEP, REVEL, CADD)
+- Literature search for variant-disease links (PubMed)
+- ACMG/AMP rule application across 28 evidence criteria
+- A defensible written justification for the final classification
+
+Existing automation tools cover individual steps. None of them produce a full chain-of-thought report you can defend in front of a CAP/CLIA audit.
+
+## The approach
+
+VariantAgent is a six-agent pipeline orchestrated with LangGraph. Each agent has a narrow responsibility, deterministic tools, and a structured output contract enforced with Pydantic. The orchestrator routes dynamically — QC failures skip annotation, novel variants trigger literature search, and low-confidence classifications hit a human checkpoint.
+
+The classification step is *not* an LLM call. The LLM reasons about which ACMG criteria apply; a deterministic rule engine then applies the standard combination logic. This separation is the difference between a demo and something a clinical lab can actually deploy.
+
+## The agents
+
+| Agent | Responsibility | Tools |
+| --- | --- | --- |
+| **Orchestrator** | Plan and route across the other five agents | LangGraph state machine |
+| **QC** | Validate input quality (coverage, depth, alignment) | MultiQC, flagstat, coverage thresholds |
+| **Annotation** | Query ClinVar, gnomAD, Ensembl VEP, UniProt | MCP servers (one per database) |
+| **Literature** | RAG over PubMed + ACMG guidelines | ChromaDB + sentence-transformers |
+| **Classification** | Apply ACMG rules deterministically | Custom rule engine |
+| **Reviewer** | Self-evaluation, contradiction detection | LLM-as-judge |
+
+## Why this matters
+
+I worked on the variant interpretation pipeline at BillionToOne, where I built an automated variant validation system that filtered 100% of false positive VarDict indel calls. VariantAgent is what the next generation of that work looks like — not a single model swap, but a coordinated system of agents that mirrors how human variant analysts actually think.
+
+For companies like Tempus, Color, GeneDx, and Variantyx that are scaling clinical interpretation throughput, this is the architecture that gets you from "LLM does some of the work" to "LLM-driven workflow that an analyst can sign off on."

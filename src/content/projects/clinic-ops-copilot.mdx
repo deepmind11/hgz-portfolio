@@ -1,0 +1,72 @@
+---
+title: ClinicOps Copilot
+slug: clinic-ops-copilot
+tagline: Forward Deployed Engineer day-one artifact for healthcare AI.
+description: An agentic operations layer for a synthetic clinic. Three Claude agents (Scheduler, Eligibility, Triage) operate over a synthetic FHIR R4 patient database, handle real edge cases like booking conflicts and Spanish code-switching, and stream every tool call to a Streamlit observability dashboard. One CLI handles seeding, deployment, and evals. One Terraform module deploys the whole thing to AWS Lambda + RDS.
+order: 4
+status: active
+featured: true
+github: https://github.com/deepmind11/clinic-ops-copilot
+tech:
+  - Claude Sonnet 4.5 (via OpenRouter)
+  - FastAPI
+  - PostgreSQL + FHIR R4
+  - Synthea (synthetic patients)
+  - SQLite events store
+  - Streamlit
+  - Terraform (AWS Lambda + RDS)
+  - GitHub Actions
+  - uv
+  - Python 3.11
+domain:
+  - Forward Deployed Engineer
+  - Healthcare operations
+  - FHIR R4
+  - Clinical AI deployment
+targetCompanies:
+  - Hippocratic AI
+  - Abridge
+  - Suki AI
+  - Ambience Healthcare
+  - Decagon
+  - Sierra
+started: "2026-04-07"
+---
+
+## The problem
+
+The existing "LangChain demo" portfolio of healthcare AI projects on GitHub does not show what a Forward Deployed Engineer actually has to do on day one of a customer engagement:
+
+- Integrate with messy real-world systems (EHR, scheduling, billing, coverage)
+- Instrument every tool call so the customer's ops team can audit what the AI did
+- Ship a CLI a customer's IT team can actually run on their laptop
+- Prove correctness with an eval harness that runs on every PR
+- Hand the customer a one-command deploy to their cloud account
+
+ClinicOps Copilot is the day-one artifact a customer-facing engineer brings into a healthcare deployment.
+
+## The approach
+
+Three Claude agents operate over a synthetic FHIR R4 PostgreSQL database seeded by Synthea. A FastAPI gateway routes requests to the right agent. Every tool call streams to a SQLite events store. A Streamlit dashboard reads from the events store in real time so the ops team can see exactly what the AI is doing.
+
+| Agent | Status | Role | Tool calls |
+| --- | --- | --- | --- |
+| **Scheduler** | shipped | Books, reschedules, cancels appointments. Handles double-bookings, slot conflicts, provider availability. | `find_open_slots`, `book_appointment`, `cancel_appointment`, `lookup_patient` |
+| **Eligibility** | shipped | Checks insurance coverage status from FHIR Coverage resource. Flags expired plans, missing prior auth. | `lookup_coverage`, `check_active_period`, `get_payor_rules` |
+| **Triage** | shipped | Routes new patient intents to the right downstream agent or human. Handles Spanish code-switching. | `classify_intent`, `route_to_agent`, `escalate_to_human` |
+
+A fourth Billing/RCM agent is planned for Phase 2.
+
+## Architecture decisions worth defending
+
+- **No LangChain, no LlamaIndex.** Custom tool-use loop on the OpenAI Python SDK pointed at OpenRouter. Single provider, no provider-switching code paths, no abstraction tax.
+- **FHIR R4 over a custom schema.** The customer already has FHIR. Meeting them where they are matters more than schema cleverness.
+- **SQLite events store, not a vendor observability platform.** A FDE working on a customer laptop in a SCIF cannot rely on Datadog. Local-first observability is the constraint, not a limitation to fix.
+- **Terraform module, not a Helm chart.** The customer's infra team is comfortable with Terraform. Optimize for their on-call rotation, not for engineering taste.
+- **Eval harness on every PR.** 20 golden test cases (booking conflicts, coverage edge cases, Spanish code-switching) are the contract. If an eval fails, the build fails. No clever LLM-as-judge — just deterministic pass/fail on tool call sequences.
+
+## Why this matters
+
+I am a bioinformatician at a CAP/CLIA oncology diagnostics lab who already ships production integration code against clinical systems (LIMS, BI databases, AWS Lambda). Forward Deployed Engineer roles at Hippocratic AI, Abridge, Suki, Ambience, Decagon, and Sierra are the highest-leverage pivot from my current role: same regulatory environment, same integration complexity, much closer to where the AI capability is being deployed for real customers.
+
+ClinicOps Copilot is the artifact I bring into those interviews. It runs on a laptop, deploys to AWS in one command, and proves I understand what day one of a healthcare customer engagement looks like.
