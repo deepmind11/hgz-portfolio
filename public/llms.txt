@@ -1,6 +1,6 @@
 # Harshit Ghosh
 
-> Bioinformatics engineer building multi-agent AI systems for genomics, drug discovery, and clinical operations. Mountain View, CA. H-1B (transferable). Open to bioinformatics + AI engineering roles, Forward Deployed Engineer positions at healthcare AI startups, and computational biology roles.
+> Bioinformatics engineer building multi-agent AI systems for genomics, drug discovery, and clinical operations. Based in Mountain View, CA.
 
 ## About
 - Name: Harshit Ghosh
@@ -8,7 +8,7 @@
 - Email: harshitghosh@gmail.com
 - LinkedIn: https://linkedin.com/in/harshit-ghosh
 - GitHub: https://github.com/deepmind11
-- Most recent role: Bioinformatics Associate, Oncology — BillionToOne Inc (Nov 2024 — Mar 2026)
+- Most recent role: Bioinformatics Associate, Oncology at BillionToOne Inc (Nov 2024 to Mar 2026)
 - Education: MA Biotechnology, Columbia University (3.80 GPA); BS Chemistry, IIT Kanpur
 
 ## Featured projects
