@@ -9,30 +9,37 @@ const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.publishedAt.localeCompare(a.data.publishedAt));
 ---
 
-<BaseLayout title="Blog" description="Long-form case studies on the multi-agent AI systems I'm building.">
+<BaseLayout
+  title="Blog"
+  description="Writing on the architecture and trade-offs behind the projects."
+>
   <section class="container-narrow pt-16 pb-12">
     <h1 class="font-bold tracking-tight mb-4">Blog</h1>
     <p class="text-lg leading-relaxed mb-10" style="color: var(--color-fg-muted);">
-      Long-form case studies on the multi-agent AI systems I'm building — the why,
-      the architecture decisions, and what I'd do differently. Coming in Phase 4 of
-      this site build.
+      Writing about the architecture choices behind the projects and where I think
+      the interesting boundaries are in clinical and biology AI.
     </p>
 
     {posts.length === 0 ? (
-      <div class="surface p-6 text-center">
+      <div class="surface p-6">
         <p style="color: var(--color-fg-muted);">
-          Posts shipping soon. In the meantime, the project pages have full case-study content.
+          No posts yet.
         </p>
-        <a href="/projects" class="link-accent inline-block mt-3 font-medium">See the projects →</a>
       </div>
     ) : (
       <div class="space-y-4">
         {posts.map((post) => (
-          <a href={`/blog/${post.id.replace(/\.mdx$/, "")}`} class="surface surface-hover block p-5">
+          <a href={`/blog/${post.id.replace(/\.mdx$/, "")}/`} class="surface surface-hover block p-5">
             <div class="text-xs font-mono mb-2" style="color: var(--color-fg-subtle);">
               {post.data.publishedAt}
+              {post.data.project && (
+                <>
+                  <span class="mx-2">·</span>
+                  <span>{post.data.project}</span>
+                </>
+              )}
             </div>
-            <h3 class="text-lg font-semibold mb-2" style="color: var(--color-fg);">{post.data.title}</h3>
+            <h2 class="text-lg font-semibold mb-2" style="color: var(--color-fg);">{post.data.title}</h2>
             <p class="text-sm" style="color: var(--color-fg-muted);">{post.data.description}</p>
           </a>
         ))}

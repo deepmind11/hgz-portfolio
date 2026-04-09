@@ -7,11 +7,29 @@ import { getCollection } from "astro:content";
 
 const projects = (await getCollection("projects"))
   .sort((a, b) => a.data.order - b.data.order);
+
+const collectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Projects",
+  "url": "https://hgz-portfolio.harshitghosh.workers.dev/projects/",
+  "description":
+    "Four open-source multi-agent AI systems for genomics, drug discovery, and clinical operations.",
+  "hasPart": projects.map((p) => ({
+    "@type": "SoftwareSourceCode",
+    "name": p.data.title,
+    "description": p.data.description,
+    "url": `https://hgz-portfolio.harshitghosh.workers.dev/projects/${p.data.slug}/`,
+    "codeRepository": p.data.github,
+  })),
+};
 ---
 
 <BaseLayout
   title="Projects"
-  description="Multi-agent AI systems for genomics, drug discovery, and clinical operations. Open source on GitHub."
+  description="Four open-source multi-agent AI systems for genomics, drug discovery, and clinical operations."
+  jsonLd={collectionSchema}
+  ogImage="/og/og-projects.png"
 >
   <section class="container-prose pt-16 pb-12">
     <div class="max-w-2xl">

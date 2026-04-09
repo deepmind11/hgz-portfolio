@@ -33,6 +33,9 @@ eval-report.json
 __pycache__/
 *.pyc
 
+# OG image font cache (downloaded by scripts/fetch-og-fonts.sh)
+.og-fonts/
+
 # macOS-specific files
 .DS_Store
 

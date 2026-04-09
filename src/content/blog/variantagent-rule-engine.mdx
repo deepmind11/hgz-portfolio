@@ -1,0 +1,72 @@
+---
+title: "Six agents and one boring rule engine"
+description: "Why VariantAgent lets LLMs read evidence but not apply ACMG classification rules."
+publishedAt: "2026-04-09"
+project: "variantagent"
+tags: ["variantagent", "multi-agent", "acmg", "llm", "clinical-ai"]
+---
+
+VariantAgent has a flashy part and a boring part. The flashy part is six LLM agents orchestrated with LangGraph, querying ClinVar and gnomAD and Ensembl VEP through MCP servers, arguing with each other about what the evidence says. The boring part is a ~200-line deterministic rule engine that takes the arguments and computes a final classification.
+
+The boring part is the interesting part.
+
+## The job
+
+A clinical variant interpretation analyst gets a variant like `chr17:43057078:T:C`. They need to answer: is this pathogenic, benign, or uncertain? To answer it, they look at:
+
+- **ClinVar**. Has anyone seen it? What did they say? How good is the review?
+- **gnomAD**. How common is it in the general population? Any population stratification?
+- **Ensembl VEP**. What protein change does it cause? What's the functional impact?
+- **PubMed**. Has anyone published on this specific variant or residue?
+- **ACMG criteria**. Given all that evidence, which of the 28 classification rules apply?
+
+Then they apply a combination rule. If you have one Very Strong Pathogenic plus one Strong Pathogenic, it's Pathogenic. If you have one Strong plus two Moderates, it's Likely Pathogenic. The combination table is three pages long, and it is not fuzzy.
+
+If you're a clinical lab, the final classification has to be defensible. An auditor should be able to trace it back to the evidence and the rules. That's the bar.
+
+## Why not just ask the LLM
+
+Current LLMs can do a surprising amount of this work. Give Claude access to ClinVar, and it will find the right record, read the reviewer notes, pull the gnomAD allele frequency, explain the protein change, and suggest a classification.
+
+But the last step is where it falls apart. I've watched Claude confidently say "given PM2, PP3, and PP5, this is Likely Pathogenic" when the actual combination rule requires at least one Strong criterion for Likely Pathogenic. It's not a knowledge gap. If you ask Claude the ACMG combination rules directly, it knows them. It's a combining gap. Applying 28 weighted criteria against a 15-row combination table is exactly the wrong shape of task for a language model.
+
+It's also the wrong shape for a clinical system. If the LLM got the combination wrong, the auditor has no way to know. The output is a fluent paragraph. The error is invisible.
+
+## The split
+
+So VariantAgent splits the job in two.
+
+The LLM agents reason about evidence. They look at ClinVar, they look at gnomAD, they look at VEP predictions. They extract facts. Each agent outputs a structured claim:
+
+```json
+{
+  "criterion": "PS1",
+  "evidence": "ClinVar VCV000012374 classifies as Pathogenic, 3-star review status",
+  "source": "clinvar:12374",
+  "confidence": "high"
+}
+```
+
+The rule engine takes those claims and computes the classification. It's a switch statement. PVS1 plus PS1 equals Pathogenic. PS1 plus PM2 plus PP3 equals Likely Pathogenic. No LLM involved. The combination logic sits in a file you can read, audit, and unit test.
+
+## Why this matters
+
+Two things fall out of this split that you don't get from a pure-LLM system.
+
+**Defensibility.** The classification can be traced to specific evidence chunks and specific rules. If an auditor asks "why did you call this Likely Pathogenic?", the system answers: "PS1 from ClinVar 12374, PM2 from gnomAD AC=0, PP3 from VEP REVEL=0.89. PS1 plus PM2 plus PP3 equals Likely Pathogenic per ACMG/AMP 2015." Every step is linked to a source and a rule.
+
+**Testability.** I can write tests like "given this evidence set, classification must be Likely Pathogenic", and they run in milliseconds against the rule engine. I can't write those tests against a pure LLM. The output is non-deterministic, and even temperature=0 answers drift when you change the model version.
+
+Both of those matter if you're deploying in a CAP/CLIA lab. Neither matters if you're building a demo. Most of the clinical variant interpretation systems I see online are demos. They do the reasoning well. They don't do the defensibility part, which is the part that actually gets the system past a lab director.
+
+## What I'd improve
+
+The reasoning agents still miss things. Specifically, they are bad at:
+
+- Recognizing when ClinVar submitters disagree with each other
+- Weighing PubMed evidence (some papers are more defensible than others)
+- Knowing when to escalate to a human reviewer
+
+All three are LLM problems. I think they are fixable with better tool-use prompting, better retrieval, and a more structured evidence schema. None of them are rule-engine problems. I am not touching the rule engine.
+
+The interesting work in clinical AI right now is the boundary: what should be LLM-driven, and what should be deterministic? VariantAgent is my current answer for variant interpretation. LLMs read evidence. Rules classify. That split is what lets the system be both smart and defensible, and I think it generalizes to a lot of other clinical workflows.

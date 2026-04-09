@@ -17,7 +17,10 @@
     "rag:upload": "node scripts/build-rag.mjs --upload",
     "rag:test": "node scripts/test-rag.mjs",
     "evals": "node evals/run.mjs",
-    "evals:prod": "node evals/run.mjs --url=https://hgz-portfolio.harshitghosh.workers.dev"
+    "evals:prod": "node evals/run.mjs --url=https://hgz-portfolio.harshitghosh.workers.dev",
+    "og:fonts": "./scripts/fetch-og-fonts.sh",
+    "og:generate": "node scripts/generate-og.mjs",
+    "og": "npm run og:fonts && npm run og:generate"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.8",
@@ -35,5 +38,11 @@
   },
   "overrides": {
     "vite": "^7"
+  },
+  "devDependencies": {
+    "@axe-core/puppeteer": "^4.11.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "puppeteer": "^24.40.0",
+    "satori": "^0.26.0"
   }
 }

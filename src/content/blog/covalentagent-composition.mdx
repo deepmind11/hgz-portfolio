@@ -1,0 +1,59 @@
+---
+title: "A protein language model isn't enough for covalent drug design"
+description: "ESM-2 can point at a reactive cysteine, but it can't tell you if it's druggable. That's a multi-signal problem."
+publishedAt: "2026-04-09"
+project: "covalentagent"
+tags: ["covalentagent", "multi-agent", "esm-2", "drug-discovery", "chemistry"]
+---
+
+Covalent inhibitors are having a moment. KRAS G12C drugs (sotorasib, adagrasib) have shown that a single reactive cysteine, in the right spot on the right protein, can be a real therapeutic target. The obvious question is: what other proteins have that kind of cysteine, and where?
+
+The obvious answer, in 2026, is "throw a protein language model at it." ESM-2, ESM-3, and their descendants encode a lot of structural and functional information, and reactive cysteines show up as high-variance positions in their embeddings. Run the model, rank the cysteines, ship a shortlist.
+
+I tried that. The shortlist is bad.
+
+## What ESM-2 gets right
+
+Pass KRAS through ESM-2 and rank cysteines by embedding variance. C80 and C118 come up at the top. C118 is near the switch II region and sits in a druggable pocket. C80 is also in a reactive environment. Both are real candidates, and neither is the most obvious by simple sequence inspection. That's a genuine signal.
+
+If you squint, it looks like you're done. You are not done.
+
+## What's missing
+
+A reactive cysteine is not the same as a druggable cysteine. Druggability needs:
+
+1. **Solvent accessibility.** The residue has to be reachable by a small molecule in solution. Many highly conserved cysteines are buried in the protein core.
+2. **Appropriate pKa.** Covalent warheads react with deprotonated thiolates. A cysteine in a hydrophobic environment with pKa 9+ is chemically unreactive under physiological conditions, regardless of what the embeddings say.
+3. **Specificity.** If the same sequence context shows up in 40 other human proteins, your drug will hit all of them. You need proteome-wide uniqueness.
+4. **Literature precedent.** If the cysteine has been tried before and failed, I want to know before I spend six months on it.
+5. **Structural context.** "Reactive in isolation" and "reactive when the protein is in its active conformation" are different. A language model without 3D structure can't tell.
+
+ESM-2 knows about 1-2 the same way a photograph knows about ocean depth. The signal is in there somewhere, but you can't extract it cleanly. For 3-5 it has almost nothing to say.
+
+## The composition
+
+CovalentAgent is what happens when you stop betting on a single model and start composing signals.
+
+- **An ESM-2 agent** flags candidate cysteines by embedding variance and local context.
+- **An RDKit/chemistry agent** computes solvent accessibility estimates, local electrostatics, and a pKa approximation from structural features.
+- **A ChemProp agent** scores each candidate on drug-likeness and target similarity to known covalent binders.
+- **A literature agent** pulls precedent from PubMed: has this exact residue or pocket been targeted before? What happened?
+- **A reviewer agent** compares the four signals and flags disagreements.
+
+Each agent has a narrow job. Each agent's output is structured. The final ranking isn't "ESM-2 said so" — it's a weighted combination with every contribution traceable back to a source.
+
+The composition is the interesting part. ESM-2's score alone correlates weakly with actual druggability. The ensemble correlates much better, and more importantly, its mistakes are legible. If a cysteine scores high on ESM-2 but fails the chemistry and literature agents, the system flags it for manual review instead of ranking it at the top.
+
+## The demo simplification
+
+The live demo on this site runs a stripped-down version: just the ESM-2 agent plus CXXC/CXC motif detection. It takes a UniProt ID, fetches the FASTA, runs ESM-2 on CPU (a 35M parameter model, not the 3B one), and ranks cysteines. It finishes in about 15 seconds cold-start, a few hundred milliseconds warm. Good enough to show the embedding signal is real; not good enough to design a drug.
+
+The full version on GitHub includes the other agents. They cost more to run (GPU + RDKit + literature RAG + ChemProp), which is why I didn't put them in the live demo. But they're also where the system gets interesting.
+
+## What I think people get wrong
+
+The current narrative around foundation biology models is "one model to rule them all". ESM gets a protein, ESM-3 generates one, AlphaFold folds it, Boltz designs a binder, done. This framing is seductive because it's simple. It's also wrong for most interesting problems.
+
+Covalent drug design is a good example. The signal is distributed. Reactivity lives in the protein sequence (ESM's domain), the chemistry (RDKit's domain), the structure (AlphaFold's domain), the proteome context (a similarity database's domain), and the literature (a RAG system's domain). No single model covers all five, and probably no single model will for a while. The honest approach is to compose them.
+
+That's the stance CovalentAgent takes. Foundation models are components. The interesting engineering is wiring them together so their disagreements are visible and their individual failures don't ruin the final output. I think the same stance applies to most clinical and research bio problems worth working on. Betting on one model is cleaner in a paper. Composing several is what actually works.

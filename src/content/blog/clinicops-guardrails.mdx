@@ -1,0 +1,66 @@
+---
+title: "NL-to-SQL is easy. The guardrails around it are the whole job."
+description: "Why building a clinical ops copilot is mostly about what the LLM shouldn't do."
+publishedAt: "2026-04-09"
+project: "clinic-ops-copilot"
+tags: ["clinicops", "nl-to-sql", "llm", "clinical", "fhir"]
+---
+
+If you give Claude Haiku a schema and a natural-language question about clinical samples, it will write correct SQL 95% of the time. This was surprising to me the first time I tried it. It's not surprising anymore. Current LLMs are extremely good at translating English to SELECT statements.
+
+So the question is: why isn't every clinical ops team already using one?
+
+The answer is the other 5%. And the guardrails you need around the 95%. And the part where NL-to-SQL isn't actually the primitive you want most of the time.
+
+## The easy part
+
+Paste this into Haiku with a schema prompt:
+
+> How many samples are stuck in QC for more than 3 days?
+
+It will confidently return:
+
+```sql
+SELECT COUNT(*) FROM clinicops_samples
+WHERE qc_started_at IS NOT NULL
+  AND qc_completed_at IS NULL
+  AND qc_started_at < strftime('%s', 'now') - 3 * 86400
+```
+
+That's correct. It will handle "which patients have unreported NorthStar Response samples", "what's the average coverage of passed samples", "list failed pipeline runs this week" — all of it, in milliseconds, for about $0.0003 per call. The NL-to-SQL problem is effectively solved by any reasonable frontier model in 2026.
+
+If that were the whole job, you could ship a clinical ops copilot in a weekend.
+
+## What actually breaks
+
+Five things go wrong once real users start asking real questions.
+
+**Bad SQL that validates.** The model writes a query that runs without error but doesn't answer the question. "Show me samples that failed last week" becomes "WHERE reported_at < now() - 7 days" instead of "WHERE current_stage = 'failed' AND updated_at > now() - 7 days". The query returns data, the data looks plausible, the user trusts it, and the trust is wrong. This failure mode is worse than SQL errors because there's no crash.
+
+**Destructive queries.** The model follows an instruction it shouldn't. "Reset the QC status for sample X" becomes an UPDATE, and now you have a silent data integrity problem. You can't rely on the model's judgment to refuse; you have to strip any non-SELECT statement at the validation layer.
+
+**Out-of-scope questions.** "Why did SAM-100018 fail?" isn't a SQL question. It's a clinical judgment question with a possible investigation workflow behind it. If you translate it into SQL anyway, you get garbage. If you just refuse it, you frustrate the user. What you actually want is for the system to recognize "this is a hypothesis question" and route it to a different handler.
+
+**Escalation.** "Should we release this batch?" is a policy question with regulatory weight. The copilot should never answer it directly. It should open a ticket and route to a lab director. But the LLM doesn't know to do that unless you tell it explicitly.
+
+**Cost drift.** Every question hits an LLM call. Three calls, actually: intent classification, SQL translation, result narration. That's fine at 10 questions per day. At 10,000 questions per day from a 200-person ops team, you're spending real money, and most of the answers could be cached.
+
+## The three-agent pattern
+
+ClinicOps Copilot splits every user question into three passes.
+
+First, an **intent classifier** labels the question: query, hypothesis, escalate, or out-of-scope. This is a one-call Haiku prompt with a strict output format. Out-of-scope gets a friendly redirect. Escalate opens a ticket. Hypothesis triggers a longer workflow. Only "query" continues.
+
+Second, a **SQL translator** converts the question into a validated SELECT against the known schema. The output is validated syntactically (must start with SELECT, no forbidden keywords, must reference approved tables) and semantically (the LLM can't invent column names). The validator is 40 lines of TypeScript and catches almost all of the bad-SQL cases.
+
+Third, a **narrator** converts the raw result rows back into a human sentence. This is where you get "5 samples are currently stuck in QC, all from the NorthStar Select assay, with the oldest dating back 8 days." The narrator is also responsible for flagging surprising answers ("this is twice the usual count").
+
+The whole pipeline is bounded. Every LLM call is small, low-temperature, and traceable. The state between calls is structured, not conversational, which means the system can be tested and the tests are deterministic.
+
+## Why this shape matters
+
+Every part of the architecture exists because the LLM is the cheap, unreliable part, and everything around it is the expensive, reliable part. That inversion is specifically what separates clinical-grade AI from consumer-grade AI. You can't ship a consumer chatbot that refuses 5% of questions with a clean escalation message. You cannot ship a clinical tool without that.
+
+The interesting work at clinical-ops-copilot isn't the SQL generation. The SQL generation is the lowest-risk, highest-quality thing in the stack. The work is the intent classifier, the SQL validator, the escalation logic, and the cache layer. When I talk to people building clinical copilots, the most common failure mode I see is that they treat the LLM as the product and the guardrails as plumbing. It's the other way around. The guardrails are the product. The LLM is just the text-to-SQL primitive, and any of a dozen models will do.
+
+That's what the demo on this site shows. The generated SQL is usually fine. What makes it a clinical tool instead of a toy is everything that happens before and after that one LLM call.

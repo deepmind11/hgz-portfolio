@@ -8,9 +8,23 @@ import { getCollection } from "astro:content";
 const projects = (await getCollection("projects"))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Harshit Ghosh",
+  "url": "https://hgz-portfolio.harshitghosh.workers.dev/",
+  "description":
+    "Portfolio of Harshit Ghosh. Four open-source multi-agent AI systems for genomics, drug discovery, and clinical operations. Every project runs live in the browser.",
+  "author": {
+    "@type": "Person",
+    "name": "Harshit Ghosh",
+  },
+  "inLanguage": "en-US",
+};
 ---
 
-<BaseLayout title="Harshit Ghosh">
+<BaseLayout title="Harshit Ghosh" jsonLd={websiteSchema} ogImage="/og/og-default.png">
   <!-- Hero -->
   <section class="relative overflow-hidden">
     <div class="absolute inset-0 grid-bg opacity-40"></div>

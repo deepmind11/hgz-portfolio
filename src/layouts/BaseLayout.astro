@@ -9,20 +9,49 @@ interface Props {
   description?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Optional page-specific JSON-LD schemas. Rendered in addition to the base Person schema. */
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
   title,
-  description = "Bioinformatics engineer building multi-agent AI for genomics, drug discovery, and clinical operations.",
+  description = "Harshit Ghosh — building at the intersection of biology and AI.",
   ogImage = "/og-default.png",
   noindex = false,
+  jsonLd,
 } = Astro.props;
 
 const fullTitle = title === "Harshit Ghosh"
   ? "Harshit Ghosh — Bioinformatics + Agentic AI"
   : `${title} — Harshit Ghosh`;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://hgz.xo.je");
+const canonicalURL = new URL(
+  Astro.url.pathname,
+  Astro.site ?? "https://hgz-portfolio.harshitghosh.workers.dev",
+);
+
+// Base Person schema always present.
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Harshit Ghosh",
+  "url": canonicalURL.href,
+  "image": new URL("/headshot.jpg", canonicalURL).href,
+  "jobTitle": "Bioinformatics Engineer",
+  "description": description,
+  "alumniOf": [
+    { "@type": "EducationalOrganization", "name": "Columbia University" },
+    { "@type": "EducationalOrganization", "name": "Indian Institute of Technology Kanpur" },
+  ],
+  "sameAs": [
+    "https://github.com/deepmind11",
+    "https://linkedin.com/in/harshit-ghosh",
+  ],
+};
+
+// Accept either one extra schema object or an array of them.
+const extraSchemas = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+const allSchemas = [personSchema, ...extraSchemas];
 ---
 
 <!doctype html>
@@ -72,24 +101,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://hgz.xo.j
       rel="stylesheet"
     />
 
-    <!-- JSON-LD person schema -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Harshit Ghosh",
-      "url": canonicalURL.href,
-      "image": new URL("/headshot.jpg", canonicalURL).href,
-      "jobTitle": "Bioinformatics Engineer",
-      "description": description,
-      "alumniOf": [
-        { "@type": "EducationalOrganization", "name": "Columbia University" },
-        { "@type": "EducationalOrganization", "name": "Indian Institute of Technology Kanpur" },
-      ],
-      "sameAs": [
-        "https://github.com/deepmind11",
-        "https://linkedin.com/in/harshit-ghosh",
-      ],
-    })} />
+    <!-- JSON-LD structured data (Person + optional page-specific schemas) -->
+    {allSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
   </head>
   <body>
     <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>

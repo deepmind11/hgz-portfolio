@@ -1,0 +1,80 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx$/, "") },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, publishedAt, project, tags } = post.data;
+
+// Article JSON-LD for the post
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": {
+    "@type": "Person",
+    "name": "Harshit Ghosh",
+    "url": "https://hgz-portfolio.harshitghosh.workers.dev/",
+  },
+  "datePublished": publishedAt,
+  "keywords": tags.join(", "),
+  "url": `https://hgz-portfolio.harshitghosh.workers.dev/blog/${post.id.replace(/\.mdx$/, "")}/`,
+  "inLanguage": "en-US",
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={articleSchema}
+  ogImage="/og/og-default.png"
+>
+  <article class="container-narrow pt-12 pb-16">
+    <a
+      href="/blog"
+      class="text-sm font-mono mb-6 inline-flex items-center gap-1"
+      style="color: var(--color-fg-muted);"
+    >
+      ← All posts
+    </a>
+
+    <header class="mb-8">
+      <div class="text-xs font-mono mb-3" style="color: var(--color-fg-subtle);">
+        {publishedAt}
+        {project && (
+          <>
+            <span class="mx-2">·</span>
+            <a href={`/projects/${project}/`} class="link-accent">
+              {project}
+            </a>
+          </>
+        )}
+      </div>
+      <h1 class="font-bold tracking-tight mb-4">{title}</h1>
+      <p class="text-lg leading-relaxed" style="color: var(--color-fg-muted);">
+        {description}
+      </p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {tags.length > 0 && (
+      <div class="mt-12 pt-6 flex flex-wrap gap-1.5" style="border-top: 1px solid var(--color-border);">
+        {tags.map((t) => <span class="badge">{t}</span>)}
+      </div>
+    )}
+  </article>
+</BaseLayout>

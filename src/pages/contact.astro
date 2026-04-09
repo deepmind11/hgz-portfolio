@@ -8,35 +8,33 @@ const channels = [
     label: "Email",
     value: "harshitghosh@gmail.com",
     href: "mailto:harshitghosh@gmail.com",
-    note: "Fastest way to reach me. I usually reply within a day.",
   },
   {
     label: "LinkedIn",
     value: "linkedin.com/in/harshit-ghosh",
     href: "https://linkedin.com/in/harshit-ghosh",
-    note: "Open to messages from recruiters, hiring managers, and engineers building in this space.",
   },
   {
     label: "GitHub",
     value: "github.com/deepmind11",
     href: "https://github.com/deepmind11",
-    note: "All four featured projects live here, alongside earlier bioinformatics tooling and pipelines.",
   },
 ];
 ---
 
-<BaseLayout title="Contact" description="Get in touch with Harshit Ghosh — bioinformatics + agentic AI engineer based in Mountain View, CA.">
-  <section class="container-narrow pt-16 pb-12">
-    <h1 class="font-bold tracking-tight mb-6">Get in touch</h1>
+<BaseLayout
+  title="Contact"
+  description="How to reach Harshit Ghosh."
+  ogImage="/og/og-default.png"
+>
+  <section class="container-narrow pt-16 pb-16">
+    <h1 class="font-bold tracking-tight mb-6">Contact</h1>
 
     <p class="text-lg leading-relaxed mb-10" style="color: var(--color-fg-muted);">
-      I'm open to bioinformatics + AI engineering roles, Forward Deployed Engineer
-      positions at healthcare AI startups, and computational biology roles where
-      multi-agent infrastructure is part of the job. I'm also happy to talk about
-      open-source collaboration on any of the projects you see on this site.
+      Email is the fastest. I read everything.
     </p>
 
-    <div class="space-y-4 mb-12">
+    <div class="space-y-4">
       {channels.map((c) => (
         <a
           href={c.href}
@@ -45,28 +43,16 @@ const channels = [
           class="surface surface-hover block p-5 group"
         >
           <div class="flex items-baseline justify-between gap-3 mb-1">
-            <span class="text-xs font-mono uppercase tracking-wider" style="color: var(--color-fg-subtle);">
+            <span class="text-xs font-mono uppercase tracking-wider" style="color: var(--color-fg-muted);">
               {c.label}
             </span>
             <span class="text-xs transition-transform group-hover:translate-x-1" style="color: var(--color-accent);">
               →
             </span>
           </div>
-          <div class="font-mono mb-1" style="color: var(--color-accent);">{c.value}</div>
-          <p class="text-sm" style="color: var(--color-fg-muted);">{c.note}</p>
+          <div class="font-mono" style="color: var(--color-accent);">{c.value}</div>
         </a>
       ))}
-    </div>
-
-    <div class="surface p-6">
-      <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
-        What to include in a cold email
-      </h3>
-      <ul class="space-y-2 text-sm leading-relaxed" style="color: var(--color-fg-muted);">
-        <li class="flex gap-2"><span style="color: var(--color-accent);">▸</span>The role and the team</li>
-        <li class="flex gap-2"><span style="color: var(--color-accent);">▸</span>What you saw on the site that made you reach out (one of the projects? the resume?)</li>
-        <li class="flex gap-2"><span style="color: var(--color-accent);">▸</span>One question I can answer in the reply</li>
-      </ul>
     </div>
   </section>
 </BaseLayout>

@@ -25,9 +25,36 @@ const statusColors = {
   active: "var(--color-warning)",
   concept: "var(--color-fg-subtle)",
 };
+
+// SoftwareSourceCode schema — helps AI crawlers understand this is a
+// code project, not a blog post or generic page.
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": title,
+  "description": description,
+  "url": `https://hgz-portfolio.harshitghosh.workers.dev/projects/${slug}/`,
+  "codeRepository": github,
+  "programmingLanguage": tech.filter((t: string) =>
+    ["Python", "TypeScript", "JavaScript", "R", "Rust", "Go"].includes(t),
+  ),
+  "keywords": [...tech, ...domain].join(", "),
+  "author": {
+    "@type": "Person",
+    "name": "Harshit Ghosh",
+    "url": "https://hgz-portfolio.harshitghosh.workers.dev/",
+  },
+  "dateCreated": started,
+  "license": "https://opensource.org/licenses/MIT",
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={softwareSchema}
+  ogImage={`/og/og-${slug}.png`}
+>
   <article>
     <!-- Hero -->
     <section class="relative overflow-hidden">
@@ -112,7 +139,7 @@ cp .env.example .env  # add your keys
 uv run python -m {slug.replace(/-/g, "_")} --help</code></pre>
         </div>
 
-        <aside class="space-y-6 lg:sticky lg:top-24 self-start">
+        <div class="space-y-6 lg:sticky lg:top-24 self-start">
           <div class="surface p-5">
             <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
               Domain
@@ -139,7 +166,7 @@ uv run python -m {slug.replace(/-/g, "_")} --help</code></pre>
               {tech.map((t) => <span class="badge text-[10px]">{t}</span>)}
             </div>
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   </article>

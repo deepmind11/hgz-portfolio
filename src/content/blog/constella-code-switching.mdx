@@ -1,0 +1,51 @@
+---
+title: "Code-switching is an engineering problem, not a TTS feature"
+description: "Why multilingual TTS systems still sound wrong when bilinguals switch mid-sentence, and what to do about it."
+publishedAt: "2026-04-09"
+project: "constella"
+tags: ["constella", "tts", "code-switching", "voice", "speech-synthesis"]
+---
+
+My parents speak a mix of English, Bengali, and Hindi at home. Not "English sometimes and Bengali sometimes" — actually mixed, mid-sentence, without thinking about it. Most bilinguals I know do this. It's called code-switching, and it's how a huge fraction of the world's multilingual speakers actually talk.
+
+No current text-to-speech system handles it well. Try it. Paste "I was working on the analysis pero me quedé sin coffee" into any TTS demo and listen. You'll get one of two failure modes:
+
+1. **Single-language accent bleed.** The system picks English or Spanish and reads everything with that accent. The Spanish words sound like a cartoon American tourist, or the English words sound like Sofía Vergara.
+2. **Per-utterance switching.** The system does segment by language, but the voice personality changes with the language. "I was working on the analysis" sounds like a middle-aged American woman. "pero me quedé sin coffee" sounds like a different middle-aged Spanish woman. Listening to it is actively jarring.
+
+Both are wrong, because real code-switching doesn't work that way. A native bilingual keeps their voice identity constant and swaps phonemes. The engineering question is: how do you build a TTS system that does the same thing?
+
+## Why this is hard
+
+The answer "just train a multilingual model" turns out not to work. Multilingual TTS systems like XTTS and Bark get better per-language quality than monolingual models, but they still hit the same problem: the language tag is per-utterance, so the model can't mid-sentence switch without losing identity.
+
+The deeper problem is that current TTS pipelines mix two things that should be separate:
+
+- **Identity.** Pitch, resonance, speaker embedding, prosodic tendencies. These are what make you sound like you.
+- **Phonetics.** The actual sound shapes of the words in a specific language.
+
+Monolingual TTS couples them tightly, which is fine for a single language. Multilingual TTS couples them loosely, which is what causes the voice to "drift" when you switch. What you want is full decoupling: one identity, many phonetic inventories, chosen per span.
+
+## Voice constellations
+
+Constella is my current attempt at the decoupled version. The rough idea: a speaker is represented by a constellation of voice embeddings, one per language they speak. At inference time, we detect language spans in the input text, pick the right embedding per span, and render the audio sequentially through a single speaker identity.
+
+A span-level model like this needs three things that current TTS systems don't ship:
+
+1. **Span detection.** Where does English end and Spanish begin? Word-level is usually sufficient, with a small amount of context. Rule-based plus a character-level classifier gets you most of the way.
+2. **Per-span voice routing.** The identity embedding stays constant. Only the phonetic model changes.
+3. **Cross-span prosody.** Sentence-level pitch contour and stress have to survive the switch. This is where most systems fall apart — pitch resets at every span, which is what makes per-utterance switching sound so artificial.
+
+The research direction is clearer than the implementation. Microsoft VibeVoice and some of the newer open-source models are moving in this direction, but none of them solve it end-to-end for bilingual code-switching yet.
+
+## The demo simplification
+
+The live Constella demo on this site does item 1 properly (span detection runs on the edge in under 20 milliseconds) and punts on items 2 and 3. The audio playback uses the browser's Web Speech API with per-span language voices. The identity still drifts because different voices are used for each language. It's a correct implementation of "per-utterance switching" with a span detector on top, which sounds better than you'd expect but isn't the real thing.
+
+The real thing needs the voice constellation. That's a GPU inference pipeline with a trained speaker embedding, a multilingual acoustic model, and a vocoder — not something you run in the browser. That pipeline lives on the GitHub version, behind a Modal deployment.
+
+## Why I think this matters
+
+Voice interfaces are going to be a bigger part of clinical and research workflows over the next couple of years. Dictation, patient intake, multilingual telehealth — all of it needs to handle code-switching correctly, because most non-white-American patients don't speak English cleanly when they're talking about medical symptoms. They switch. A patient describing pain in Spanish and medications in English is a common pattern, and a TTS system that mangles one of the two halves is not fit for purpose.
+
+The interesting engineering is in the decoupling: identity vs. phonetics, speaker vs. language, voice vs. accent. The systems that get that split right are going to feel very different from everything that's out there now. Constella is my attempt to get the architecture right, even if the full model isn't fine-tuned yet. The architecture is the thing that generalizes.
