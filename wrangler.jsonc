@@ -33,6 +33,10 @@
 		{
 			"binding": "SESSION",
 			"id": "984068c2aeee4c55b43050a8d4f33bb6"
+		},
+		{
+			"binding": "DEMO_CACHE",
+			"id": "674da1c4d4e74141960ddc4c34b2dc10"
 		}
 	]
 }
