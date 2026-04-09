@@ -25,5 +25,14 @@
 			"database_name": "hgz-portfolio-db",
 			"database_id": "017add37-03c7-4010-9a2e-0c5d64368f23"
 		}
+	],
+	// KV namespace for Astro's session middleware. Auto-provisioned on the
+	// first deploy; id pinned here so CI builds don't try to auth via the
+	// wrangler remote proxy to resolve it.
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "984068c2aeee4c55b43050a8d4f33bb6"
+		}
 	]
 }
