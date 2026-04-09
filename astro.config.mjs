@@ -21,11 +21,12 @@ export default defineConfig({
   integrations: [react(), mdx(), sitemap()],
   adapter: cloudflare({
     imageService: "compile",
-    // Disable the wrangler remote proxy at build time. The proxy requires
-    // CF auth, which we don't always have in CI. Local dev still uses it
-    // if you set `platformProxy: { enabled: true }` explicitly.
-    platformProxy: {
-      enabled: false,
-    },
+    // Prerender static pages with plain Node instead of workerd.
+    prerenderEnvironment: "node",
+    // Skip the wrangler remote-binding proxy at build time. Remote
+    // bindings like AI/Vectorize/KV require CF auth to validate, which
+    // we don't have in CI. At request time the worker still binds them
+    // normally, so there's no runtime impact.
+    remoteBindings: false,
   }),
 });
