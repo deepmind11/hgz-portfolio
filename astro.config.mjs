@@ -24,9 +24,8 @@ export default defineConfig({
     // Prerender static pages with plain Node instead of workerd.
     prerenderEnvironment: "node",
     // Skip the wrangler remote-binding proxy at build time. Remote
-    // bindings like AI/Vectorize/KV require CF auth to validate, which
-    // we don't have in CI. At request time the worker still binds them
-    // normally, so there's no runtime impact.
+    // bindings (KV, etc.) require CF auth to validate, which we don't
+    // always have in CI. Runtime bindings are unaffected.
     remoteBindings: false,
   }),
 });

@@ -37,6 +37,9 @@ const PAGES = [
 	"/contact/",
 	"/blog/",
 	"/blog/variantagent-rule-engine/",
+	"/blog/covalentagent-composition/",
+	"/blog/constella-code-switching/",
+	"/blog/clinicops-guardrails/",
 ];
 
 function colorForImpact(impact) {
