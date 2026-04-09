@@ -19,26 +19,16 @@ domain:
   - Bilingual / code-switching
   - Patient safety
   - Multi-agent verification
-targetCompanies:
-  - Hippocratic AI
-  - Polaris Health
-  - Abridge
-  - Ambience Healthcare
-  - Suki AI
-  - Nabla
 started: "2026-04-07"
 ---
 
 ## The problem
 
-I read the [Polaris paper](https://arxiv.org/abs/2403.13313) (Mukherjee et al., 2024) and the [WellSpan colorectal cancer screening study](https://www.medrxiv.org/content/10.1101/2024.12.16.24318586v1) (Bhimani and Baker, 2024) and noticed two things:
+Bilingual patients, especially in U.S. Latino populations, regularly mix English and Spanish mid-sentence ("¿Tomo el inhaler dos veces al día, but only when I feel short of breath?"). Current voice AI systems don't handle this well. They either pick a language per utterance (bad) or drift between voices mid-span (jarring). Intra-utterance code-switching is a real engineering problem, and most off-the-shelf TTS stacks treat it as an afterthought.
 
-1. **Polaris 3.0 reports 99.83% Spanish accuracy** and supports 14 languages with real-time multilingual auto-switch. Hippocratic AI's Spanish-language voice agent achieved a **2.6x higher FIT-test opt-in rate** among Spanish-speaking patients vs English-speaking patients in the WellSpan study. Bilingual healthcare AI is producing real clinical-economic impact, not just demos.
-2. **Intra-utterance code-switching** — where a bilingual patient mixes English and Spanish *within a single sentence* ("¿Tomo el inhaler dos veces al día, but only when I feel short of breath?") — is endemic in U.S. Latino patient populations, but I could not find an explicit treatment of it in any of the published Polaris papers.
+Around the same time I was reading about this, Microsoft released [VibeVoice](https://github.com/microsoft/VibeVoice), the first open-source ASR model that natively handles code-switching across 50+ languages with no language parameter required.
 
-Around the same time, Microsoft released [VibeVoice](https://github.com/microsoft/VibeVoice), the first open-source ASR model that natively handles **code-switching across 50+ languages with no language parameter required**.
-
-I wanted to know: what happens if you build a Polaris-style constellation entirely on VibeVoice?
+I wanted to know: what happens if you build a safety-verifier constellation entirely on VibeVoice?
 
 ## The approach
 
@@ -59,4 +49,4 @@ Post-discharge follow-up calls for a Type 2 diabetic patient who code-switches b
 
 ## Why this matters
 
-Hippocratic AI, Polaris Health, and the rest of the healthcare voice AI ecosystem are pushing on Spanish coverage and patient safety verification. Constella is a runnable, evaluable, open-source proof that I understand both the safety architecture *and* the linguistic edge cases that show up in U.S. Latino patient populations. It's also the only public implementation of a Polaris-style constellation built end-to-end on VibeVoice that I'm aware of.
+Bilingual patients code-switch, and healthcare voice AI that pretends otherwise fails the most linguistically diverse populations. Constella is a runnable, evaluable, open-source attempt at the safety architecture and the linguistic edge cases at the same time.

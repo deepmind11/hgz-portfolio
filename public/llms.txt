@@ -1,27 +1,26 @@
 # Harshit Ghosh
 
-> Bioinformatics engineer building multi-agent AI systems for genomics, drug discovery, and clinical operations. Based in Mountain View, CA.
+> Building at the intersection of biology and AI. Based in the SF Bay Area.
 
 ## About
 - Name: Harshit Ghosh
-- Location: Mountain View, CA
 - Email: harshitghosh@gmail.com
 - LinkedIn: https://linkedin.com/in/harshit-ghosh
 - GitHub: https://github.com/deepmind11
-- Most recent role: Bioinformatics Associate, Oncology at BillionToOne Inc (Nov 2024 to Mar 2026)
-- Education: MA Biotechnology, Columbia University (3.80 GPA); BS Chemistry, IIT Kanpur
+- Interests: deep learning for biology (protein language models, structure prediction, generative chemistry, foundation models for biology) and agentic systems that use these models to reason in the real world.
 
 ## Featured projects
-- [VariantAgent](https://hgz.xo.je/projects/variantagent): Multi-agent ACMG variant interpretation. LangGraph + MCP. Six specialist agents over ClinVar, gnomAD, Ensembl VEP, PubMed.
-- [CovalentAgent](https://hgz.xo.je/projects/covalentagent): First open-source multi-agent system for covalent drug design. ESM-2, RDKit, Chemprop.
-- [Constella](https://hgz.xo.je/projects/constella): Polaris-style voice constellation with native English-Spanish code-switching. Built on Microsoft VibeVoice.
-- [ClinicOps Copilot](https://hgz.xo.je/projects/clinic-ops-copilot): Forward Deployed Engineer day-one artifact. Three Claude agents over a synthetic FHIR R4 database. Streamlit observability. Terraform deploy.
+- [VariantAgent](https://hgz-portfolio.harshitghosh.workers.dev/projects/variantagent/): Multi-agent ACMG variant interpretation. LangGraph + MCP. Six specialist agents over ClinVar, gnomAD, Ensembl VEP, PubMed.
+- [CovalentAgent](https://hgz-portfolio.harshitghosh.workers.dev/projects/covalentagent/): Multi-agent system for covalent drug design. ESM-2, RDKit, Chemprop.
+- [Constella](https://hgz-portfolio.harshitghosh.workers.dev/projects/constella/): Voice synthesis with native English-Spanish code-switching.
+- [ClinicOps Copilot](https://hgz-portfolio.harshitghosh.workers.dev/projects/clinic-ops-copilot/): Natural-language query agent over a synthetic FHIR R4 dataset.
 
 ## Pages
-- [Home](https://hgz.xo.je/)
-- [Projects](https://hgz.xo.je/projects)
-- [About](https://hgz.xo.je/about)
-- [Contact](https://hgz.xo.je/contact)
+- [Home](https://hgz-portfolio.harshitghosh.workers.dev/)
+- [Projects](https://hgz-portfolio.harshitghosh.workers.dev/projects/)
+- [Blog](https://hgz-portfolio.harshitghosh.workers.dev/blog/)
+- [About](https://hgz-portfolio.harshitghosh.workers.dev/about/)
+- [Contact](https://hgz-portfolio.harshitghosh.workers.dev/contact/)
 
 ## Skills
-Pipeline engineering (Nextflow, Snakemake), Python, R, SQL, AWS (S3, Batch, Lambda, EventBridge, Bedrock), Terraform, Docker, multi-agent AI systems (LangGraph, MCP, Claude, OpenRouter), bioinformatics tooling (Samtools, GATK, VarDict, PySAM), CAP/CLIA regulatory environment, FHIR R4, Forward Deployed Engineering.
+Pipeline engineering (Nextflow, Snakemake), Python, R, SQL, AWS (S3, Batch, Lambda, Bedrock), Terraform, Docker, multi-agent AI systems (LangGraph, MCP, Claude, OpenRouter), bioinformatics tooling (Samtools, GATK, VarDict, PySAM).

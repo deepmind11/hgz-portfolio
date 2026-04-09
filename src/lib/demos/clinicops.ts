@@ -38,7 +38,7 @@ clinicops_patients(
 clinicops_samples(
   sample_id TEXT PRIMARY KEY,     -- e.g. 'SAM-100001'
   patient_id TEXT,                -- FK to clinicops_patients
-  assay TEXT,                     -- 'NorthStar Select' | 'NorthStar Response'
+  assay TEXT,                     -- 'Solid Tumor Panel' | 'Liquid Biopsy Panel'
   collected_at INTEGER,           -- unix seconds
   received_at INTEGER,
   qc_started_at INTEGER,

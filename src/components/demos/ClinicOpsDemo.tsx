@@ -4,7 +4,7 @@ import type { ClinicOpsInput, ClinicOpsResult } from "../../lib/demos/schema";
 const EXAMPLES = [
 	"How many samples are stuck in QC right now?",
 	"Show me all samples that failed in the last two weeks",
-	"Which patients have NorthStar Response samples not yet reported?",
+	"Which patients have Liquid Biopsy Panel samples not yet reported?",
 	"What's the average coverage depth of passed samples?",
 	"Why did SAM-100018 fail?",
 ];

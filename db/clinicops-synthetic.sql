@@ -5,9 +5,9 @@
 -- Apply with:
 --   npx wrangler d1 execute hgz-portfolio-db --remote --file=./db/clinicops-synthetic.sql
 
+DROP TABLE IF EXISTS clinicops_pipeline_runs;
 DROP TABLE IF EXISTS clinicops_samples;
 DROP TABLE IF EXISTS clinicops_patients;
-DROP TABLE IF EXISTS clinicops_pipeline_runs;
 
 CREATE TABLE clinicops_patients (
 	patient_id TEXT PRIMARY KEY,
@@ -83,38 +83,38 @@ INSERT INTO clinicops_samples
 	(sample_id, patient_id, assay, collected_at, received_at, qc_started_at, qc_completed_at, reported_at, current_stage, qc_status, coverage_depth, duplication_rate, on_target_rate, flags)
 VALUES
 	-- 8 fully reported samples
-	('SAM-100001', 'PAT-00001', 'NorthStar Select', 1738108800, 1738195200, 1738454400, 1738540800, 1738713600, 'reported', 'pass', 2150, 0.12, 0.89, NULL),
-	('SAM-100002', 'PAT-00002', 'NorthStar Response', 1738195200, 1738281600, 1738540800, 1738627200, 1738800000, 'reported', 'pass', 1840, 0.18, 0.87, NULL),
-	('SAM-100003', 'PAT-00003', 'NorthStar Select', 1738281600, 1738368000, 1738627200, 1738713600, 1738886400, 'reported', 'pass', 2280, 0.10, 0.91, NULL),
-	('SAM-100004', 'PAT-00004', 'NorthStar Select', 1738368000, 1738454400, 1738713600, 1738800000, 1738972800, 'reported', 'pass', 2420, 0.09, 0.92, NULL),
-	('SAM-100005', 'PAT-00005', 'NorthStar Response', 1738454400, 1738540800, 1738800000, 1738886400, 1739059200, 'reported', 'pass', 1950, 0.16, 0.88, NULL),
-	('SAM-100006', 'PAT-00006', 'NorthStar Select', 1738540800, 1738627200, 1738886400, 1738972800, 1739145600, 'reported', 'pass', 2100, 0.13, 0.90, NULL),
-	('SAM-100007', 'PAT-00007', 'NorthStar Select', 1738627200, 1738713600, 1738972800, 1739059200, 1739232000, 'reported', 'pass', 2310, 0.11, 0.91, NULL),
-	('SAM-100008', 'PAT-00008', 'NorthStar Response', 1738713600, 1738800000, 1739059200, 1739145600, 1739318400, 'reported', 'pass', 1720, 0.19, 0.85, NULL),
+	('SAM-100001', 'PAT-00001', 'Solid Tumor Panel', 1738108800, 1738195200, 1738454400, 1738540800, 1738713600, 'reported', 'pass', 2150, 0.12, 0.89, NULL),
+	('SAM-100002', 'PAT-00002', 'Liquid Biopsy Panel', 1738195200, 1738281600, 1738540800, 1738627200, 1738800000, 'reported', 'pass', 1840, 0.18, 0.87, NULL),
+	('SAM-100003', 'PAT-00003', 'Solid Tumor Panel', 1738281600, 1738368000, 1738627200, 1738713600, 1738886400, 'reported', 'pass', 2280, 0.10, 0.91, NULL),
+	('SAM-100004', 'PAT-00004', 'Solid Tumor Panel', 1738368000, 1738454400, 1738713600, 1738800000, 1738972800, 'reported', 'pass', 2420, 0.09, 0.92, NULL),
+	('SAM-100005', 'PAT-00005', 'Liquid Biopsy Panel', 1738454400, 1738540800, 1738800000, 1738886400, 1739059200, 'reported', 'pass', 1950, 0.16, 0.88, NULL),
+	('SAM-100006', 'PAT-00006', 'Solid Tumor Panel', 1738540800, 1738627200, 1738886400, 1738972800, 1739145600, 'reported', 'pass', 2100, 0.13, 0.90, NULL),
+	('SAM-100007', 'PAT-00007', 'Solid Tumor Panel', 1738627200, 1738713600, 1738972800, 1739059200, 1739232000, 'reported', 'pass', 2310, 0.11, 0.91, NULL),
+	('SAM-100008', 'PAT-00008', 'Liquid Biopsy Panel', 1738713600, 1738800000, 1739059200, 1739145600, 1739318400, 'reported', 'pass', 1720, 0.19, 0.85, NULL),
 	-- 4 samples in analysis stage
-	('SAM-100009', 'PAT-00009', 'NorthStar Select', 1738886400, 1738972800, 1739232000, 1739318400, NULL, 'analysis', 'pass', 2080, 0.14, 0.89, NULL),
-	('SAM-100010', 'PAT-00010', 'NorthStar Select', 1738972800, 1739059200, 1739318400, 1739404800, NULL, 'analysis', 'pass', 2190, 0.12, 0.90, NULL),
-	('SAM-100011', 'PAT-00011', 'NorthStar Response', 1739059200, 1739145600, 1739404800, 1739491200, NULL, 'analysis', 'pass', 1880, 0.17, 0.87, NULL),
-	('SAM-100012', 'PAT-00012', 'NorthStar Select', 1739145600, 1739232000, 1739491200, 1739577600, NULL, 'analysis', 'pass', 2220, 0.11, 0.91, NULL),
+	('SAM-100009', 'PAT-00009', 'Solid Tumor Panel', 1738886400, 1738972800, 1739232000, 1739318400, NULL, 'analysis', 'pass', 2080, 0.14, 0.89, NULL),
+	('SAM-100010', 'PAT-00010', 'Solid Tumor Panel', 1738972800, 1739059200, 1739318400, 1739404800, NULL, 'analysis', 'pass', 2190, 0.12, 0.90, NULL),
+	('SAM-100011', 'PAT-00011', 'Liquid Biopsy Panel', 1739059200, 1739145600, 1739404800, 1739491200, NULL, 'analysis', 'pass', 1880, 0.17, 0.87, NULL),
+	('SAM-100012', 'PAT-00012', 'Solid Tumor Panel', 1739145600, 1739232000, 1739491200, 1739577600, NULL, 'analysis', 'pass', 2220, 0.11, 0.91, NULL),
 	-- 5 samples stuck in QC (critical: >3 days in this stage)
-	('SAM-100013', 'PAT-00013', 'NorthStar Select', 1737936000, 1738022400, 1738281600, NULL, NULL, 'qc', 'review', 1680, 0.22, 0.82, 'low_coverage'),
-	('SAM-100014', 'PAT-00014', 'NorthStar Select', 1738022400, 1738108800, 1738368000, NULL, NULL, 'qc', 'review', 1590, 0.25, 0.80, 'high_duplication'),
-	('SAM-100015', 'PAT-00015', 'NorthStar Response', 1738108800, 1738195200, 1738454400, NULL, NULL, 'qc', 'review', 1720, 0.21, 0.83, 'off_target'),
-	('SAM-100016', 'PAT-00016', 'NorthStar Select', 1738195200, 1738281600, 1738540800, NULL, NULL, 'qc', 'review', 1620, 0.24, 0.81, 'low_coverage'),
-	('SAM-100017', 'PAT-00017', 'NorthStar Response', 1738281600, 1738368000, 1738627200, NULL, NULL, 'qc', 'review', 1550, 0.26, 0.79, 'low_coverage,high_duplication'),
+	('SAM-100013', 'PAT-00013', 'Solid Tumor Panel', 1737936000, 1738022400, 1738281600, NULL, NULL, 'qc', 'review', 1680, 0.22, 0.82, 'low_coverage'),
+	('SAM-100014', 'PAT-00014', 'Solid Tumor Panel', 1738022400, 1738108800, 1738368000, NULL, NULL, 'qc', 'review', 1590, 0.25, 0.80, 'high_duplication'),
+	('SAM-100015', 'PAT-00015', 'Liquid Biopsy Panel', 1738108800, 1738195200, 1738454400, NULL, NULL, 'qc', 'review', 1720, 0.21, 0.83, 'off_target'),
+	('SAM-100016', 'PAT-00016', 'Solid Tumor Panel', 1738195200, 1738281600, 1738540800, NULL, NULL, 'qc', 'review', 1620, 0.24, 0.81, 'low_coverage'),
+	('SAM-100017', 'PAT-00017', 'Liquid Biopsy Panel', 1738281600, 1738368000, 1738627200, NULL, NULL, 'qc', 'review', 1550, 0.26, 0.79, 'low_coverage,high_duplication'),
 	-- 3 samples failed
-	('SAM-100018', 'PAT-00018', 'NorthStar Select', 1737849600, 1737936000, 1738195200, 1738281600, NULL, 'failed', 'fail', 820, 0.42, 0.68, 'insufficient_coverage'),
-	('SAM-100019', 'PAT-00019', 'NorthStar Select', 1737936000, 1738022400, 1738281600, 1738368000, NULL, 'failed', 'fail', 940, 0.38, 0.70, 'contamination_suspected'),
-	('SAM-100020', 'PAT-00020', 'NorthStar Response', 1738022400, 1738108800, 1738368000, 1738454400, NULL, 'failed', 'fail', 1120, 0.35, 0.72, 'library_dropout'),
+	('SAM-100018', 'PAT-00018', 'Solid Tumor Panel', 1737849600, 1737936000, 1738195200, 1738281600, NULL, 'failed', 'fail', 820, 0.42, 0.68, 'insufficient_coverage'),
+	('SAM-100019', 'PAT-00019', 'Solid Tumor Panel', 1737936000, 1738022400, 1738281600, 1738368000, NULL, 'failed', 'fail', 940, 0.38, 0.70, 'contamination_suspected'),
+	('SAM-100020', 'PAT-00020', 'Liquid Biopsy Panel', 1738022400, 1738108800, 1738368000, 1738454400, NULL, 'failed', 'fail', 1120, 0.35, 0.72, 'library_dropout'),
 	-- 8 fresh samples in early stages
-	('SAM-100021', 'PAT-00001', 'NorthStar Select', 1739232000, 1739318400, NULL, NULL, NULL, 'extraction', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100022', 'PAT-00002', 'NorthStar Response', 1739318400, 1739404800, NULL, NULL, NULL, 'library_prep', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100023', 'PAT-00003', 'NorthStar Select', 1739404800, 1739491200, NULL, NULL, NULL, 'library_prep', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100024', 'PAT-00004', 'NorthStar Select', 1739491200, 1739577600, NULL, NULL, NULL, 'sequencing', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100025', 'PAT-00005', 'NorthStar Response', 1739577600, 1739664000, NULL, NULL, NULL, 'sequencing', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100026', 'PAT-00006', 'NorthStar Select', 1739664000, 1739750400, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100027', 'PAT-00007', 'NorthStar Select', 1739750400, 1739836800, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL),
-	('SAM-100028', 'PAT-00008', 'NorthStar Response', 1739836800, 1739923200, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL);
+	('SAM-100021', 'PAT-00001', 'Solid Tumor Panel', 1739232000, 1739318400, NULL, NULL, NULL, 'extraction', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100022', 'PAT-00002', 'Liquid Biopsy Panel', 1739318400, 1739404800, NULL, NULL, NULL, 'library_prep', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100023', 'PAT-00003', 'Solid Tumor Panel', 1739404800, 1739491200, NULL, NULL, NULL, 'library_prep', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100024', 'PAT-00004', 'Solid Tumor Panel', 1739491200, 1739577600, NULL, NULL, NULL, 'sequencing', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100025', 'PAT-00005', 'Liquid Biopsy Panel', 1739577600, 1739664000, NULL, NULL, NULL, 'sequencing', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100026', 'PAT-00006', 'Solid Tumor Panel', 1739664000, 1739750400, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100027', 'PAT-00007', 'Solid Tumor Panel', 1739750400, 1739836800, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL),
+	('SAM-100028', 'PAT-00008', 'Liquid Biopsy Panel', 1739836800, 1739923200, NULL, NULL, NULL, 'accessioning', NULL, NULL, NULL, NULL, NULL);
 
 -- ======================================================
 -- Pipeline runs (operational event log)

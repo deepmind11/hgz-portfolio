@@ -21,13 +21,6 @@ domain:
   - Drug discovery
   - Covalent chemistry
   - Computational chemistry
-targetCompanies:
-  - Frontier Medicines
-  - Vividion Therapeutics
-  - Mirati Therapeutics
-  - Schrodinger
-  - Atomwise
-  - Genesis Therapeutics
 started: "2026-03-27"
 ---
 
@@ -62,4 +55,4 @@ Every design decision is grounded in literature. Every property prediction is re
 
 ## Why this matters
 
-Frontier Medicines, Vividion, Mirati, and the rest of the covalent therapeutics ecosystem are looking for engineers who can build the AI infrastructure that scales their chemists' impact. CovalentAgent is a runnable proof that I understand the workflow from target ID through ADMET prediction, and that I can ship a multi-agent system that respects the way medicinal chemists actually evaluate covalent leads.
+Covalent drug design is a good test case for foundation biology models. A protein language model like ESM-2 can point at a reactive cysteine, but reactivity alone doesn't tell you if it's druggable. The interesting engineering is composing multiple signals (sequence, chemistry, structure, literature) into a ranking that a medicinal chemist can actually act on. CovalentAgent is my attempt at that composition.

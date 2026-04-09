@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const { title, tagline, description, github, demo, tech, domain, targetCompanies, status, started, slug } = project.data;
+const { title, tagline, description, github, demo, tech, domain, status, started, slug } = project.data;
 
 const statusColors = {
   shipped: "var(--color-success)",
@@ -146,15 +146,6 @@ uv run python -m {slug.replace(/-/g, "_")} --help</code></pre>
             </h3>
             <ul class="space-y-1.5 text-sm">
               {domain.map((d) => <li style="color: var(--color-fg);">{d}</li>)}
-            </ul>
-          </div>
-
-          <div class="surface p-5">
-            <h3 class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--color-fg-subtle);">
-              Built for
-            </h3>
-            <ul class="space-y-1.5 text-sm">
-              {targetCompanies.slice(0, 6).map((c) => <li style="color: var(--color-fg);">{c}</li>)}
             </ul>
           </div>
 

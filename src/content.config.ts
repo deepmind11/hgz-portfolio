@@ -15,7 +15,6 @@ const projects = defineCollection({
     demo: z.string().url().optional(),
     tech: z.array(z.string()),
     domain: z.array(z.string()),
-    targetCompanies: z.array(z.string()),
     image: z.string().optional(),
     started: z.string(),
   }),

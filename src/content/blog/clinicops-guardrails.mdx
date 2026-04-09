@@ -27,7 +27,7 @@ WHERE qc_started_at IS NOT NULL
   AND qc_started_at < strftime('%s', 'now') - 3 * 86400
 ```
 
-That's correct. It will handle "which patients have unreported NorthStar Response samples", "what's the average coverage of passed samples", "list failed pipeline runs this week" — all of it, in milliseconds, for about $0.0003 per call. The NL-to-SQL problem is effectively solved by any reasonable frontier model in 2026.
+That's correct. It will handle "which patients have unreported samples", "what's the average coverage of passed samples", "list failed pipeline runs this week", all of it, in milliseconds, for about $0.0003 per call. The NL-to-SQL problem is effectively solved by any reasonable frontier model in 2026.
 
 If that were the whole job, you could ship a clinical ops copilot in a weekend.
 
@@ -53,7 +53,7 @@ First, an **intent classifier** labels the question: query, hypothesis, escalate
 
 Second, a **SQL translator** converts the question into a validated SELECT against the known schema. The output is validated syntactically (must start with SELECT, no forbidden keywords, must reference approved tables) and semantically (the LLM can't invent column names). The validator is 40 lines of TypeScript and catches almost all of the bad-SQL cases.
 
-Third, a **narrator** converts the raw result rows back into a human sentence. This is where you get "5 samples are currently stuck in QC, all from the NorthStar Select assay, with the oldest dating back 8 days." The narrator is also responsible for flagging surprising answers ("this is twice the usual count").
+Third, a **narrator** converts the raw result rows back into a human sentence. This is where you get "5 samples are currently stuck in QC, all from the same assay type, with the oldest dating back 8 days." The narrator is also responsible for flagging surprising answers ("this is twice the usual count").
 
 The whole pipeline is bounded. Every LLM call is small, low-temperature, and traceable. The state between calls is structured, not conversational, which means the system can be tested and the tests are deterministic.
 

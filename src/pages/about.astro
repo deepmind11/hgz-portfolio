@@ -3,85 +3,6 @@ export const prerender = true;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const experience = [
-  {
-    role: "Bioinformatics Associate, Oncology",
-    company: "BillionToOne Inc",
-    location: "Menlo Park, CA",
-    dates: "Nov 2024 — Mar 2026",
-    highlights: [
-      "Built an automated variant validation system using PySAM and BAM-level alignment analysis to verify VarDict indel calls in the NorthStar Select Assay, catching 100% of false positive calls without affecting assay sensitivity.",
-      "Engineered a sample dwell-check monitoring system on AWS (Lambda, EventBridge, Terraform) tracking 600+ samples/day across BI databases and LabIt LIMS, catching 15-20 at-risk samples per week.",
-      "Built an agentic AI sample-query chatbot on AWS Bedrock that lets QA, MSLs, and Variant Interpretation teams query sample status in natural language and generate diagnostic hypotheses.",
-      "Engineered an automated NP-hard plot labeling system using constrained optimization that the team believed could not be automated. Eliminated manual plot review from operational workflows.",
-      "Optimized Nextflow-based production pipelines processing 2,000+ patient samples/week on AWS for the NorthStar Response Assay (multiplex PCR + bisulfite sequencing).",
-    ],
-  },
-  {
-    role: "Computational Biologist",
-    company: "Columbia University",
-    location: "New York, NY",
-    dates: "Jan 2023 — Oct 2024",
-    highlights: [
-      "Configured PyProBound (PyTorch-based binding model) to analyze 20-25 transcription factors across hundreds of ENCODE ChIP-seq datasets, identifying a 20% difference in binding preferences across chromosomes for certain TFs.",
-      "Built end-to-end Snakemake pipelines automating FASTQ QC, alignment, peak calling, post-processing, and downstream PyProBound analysis. Reduced project management time by 90%.",
-      "Inferred DNA binding preferences of DNaseI through statistical analysis of two million DNase-seq fragments.",
-      "Achieved 100% CPU utilization on an HPC cluster by parallelizing genomics workloads across 50+ threads, reducing per-job runtimes from hours to minutes.",
-    ],
-  },
-  {
-    role: "AI Biology Trainer",
-    company: "Outlier (Scale AI)",
-    location: "Remote",
-    dates: "Jan 2024 — Sep 2024",
-    highlights: [
-      "Designed biology-domain prompts across molecular biology, genomics, and bioinformatics for RLHF training pipelines at Scale AI.",
-      "Rated LLM-generated responses for scientific accuracy, reasoning quality, and prompt-following behavior, contributing to foundation model alignment.",
-      "Identified and flagged scientific hallucinations and citation fabrications across hundreds of biology-domain interactions.",
-    ],
-  },
-  {
-    role: "Investment Analyst, Antibody Drug Conjugates",
-    company: "Blackstone",
-    location: "New York, NY",
-    dates: "Jan 2023 — May 2023",
-    highlights: [
-      "Identified the top five ADCs by market share through comprehensive oncology market analysis.",
-      "Developed an evaluation framework for emerging ADCs through case studies of successful and failed candidates.",
-      "Shortlisted three investments with multi-billion dollar market potential by analyzing clinical trial data of 100+ late-stage ADCs.",
-      "Presented analysis to Blackstone executives.",
-    ],
-  },
-  {
-    role: "Data Scientist",
-    company: "Standard Chartered Bank",
-    location: "Bangalore, India",
-    dates: "Jul 2019 — Jul 2021",
-    highlights: [
-      "Built a prescriptive ML model in R that identified new 7-figure revenue opportunities for sales teams.",
-      "Pooled data from legacy systems into a central data warehouse to unify analytical capabilities across five business areas.",
-      "Followed Agile Scrum framework for software development.",
-    ],
-  },
-];
-
-const education = [
-  {
-    school: "Columbia University",
-    degree: "MA in Biotechnology",
-    location: "New York, NY",
-    dates: "2022 — 2023",
-    detail: "GPA 3.80 / 4.0",
-  },
-  {
-    school: "Indian Institute of Technology, Kanpur",
-    degree: "BS in Chemistry",
-    location: "Kanpur, India",
-    dates: "2015 — 2019",
-    detail: "INSPIRE Scholarship recipient",
-  },
-];
-
 const skills = {
   "Pipeline engineering": ["Nextflow", "Snakemake", "workflow orchestration", "HPC / Slurm"],
   "Programming": ["Python", "R", "SQL", "Bash", "Groovy (Nextflow DSL)"],
@@ -90,8 +11,7 @@ const skills = {
   "Assay tech": ["Hybrid capture with UMI", "bisulfite sequencing", "multiplex PCR", "cell-free DNA", "ChIP-seq", "DNase-seq"],
   "Data science": ["Pandas", "NumPy", "Scikit-learn", "Plotly", "Matplotlib", "Tidyverse", "Jupyter"],
   "AI / ML": ["Multi-agent systems", "LangGraph", "MCP", "AWS Bedrock", "Claude", "OpenRouter", "Langfuse"],
-  "Regulatory": ["CAP/CLIA", "NYSDOH"],
-  "Languages": ["English (native)", "Bengali (native)", "Hindi (native)", "Spanish (professional)"],
+  "Languages": ["English", "Bengali", "Hindi", "Spanish"],
 };
 ---
 
@@ -109,74 +29,27 @@ const skills = {
       </p>
 
       <p>
-        Currently I'm interested in deep learning for biology, which is
-        about building new deep learning architectures and new foundation
-        models for understanding proteins, genomic data, gene regulation,
-        and things like that.
+        Currently I'm interested in deep learning for biology, which is about
+        building new deep learning architectures and new foundation models for
+        understanding proteins, genomic data, gene regulation, and things like
+        that.
       </p>
 
       <p>
-        Second, I'm interested in building agentic systems that rely on
-        these deep learning models to reason in the real world.
+        Second, I'm interested in building agentic systems that rely on these
+        deep learning models to reason in the real world.
       </p>
     </div>
   </section>
 
   <section class="container-narrow pb-12">
-    <h2 class="font-semibold tracking-tight mb-8 pt-8" style="border-top: 1px solid var(--color-border);">
-      Experience
-    </h2>
-
-    <div class="space-y-10">
-      {experience.map((job) => (
-        <div>
-          <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-            <h3 class="text-lg font-semibold" style="color: var(--color-fg);">
-              {job.role}
-            </h3>
-            <span class="text-xs font-mono" style="color: var(--color-fg-subtle);">
-              {job.dates}
-            </span>
-          </div>
-          <p class="text-sm mb-3" style="color: var(--color-accent);">
-            {job.company} · {job.location}
-          </p>
-          <ul class="space-y-2 text-sm leading-relaxed" style="color: var(--color-fg-muted);">
-            {job.highlights.map((h) => (
-              <li class="flex gap-2">
-                <span style="color: var(--color-accent);">▸</span>
-                <span>{h}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <section class="container-narrow pb-12">
-    <h2 class="font-semibold tracking-tight mb-8 pt-8" style="border-top: 1px solid var(--color-border);">
+    <h2 class="font-semibold tracking-tight mb-6 pt-8" style="border-top: 1px solid var(--color-border);">
       Education
     </h2>
-
-    <div class="space-y-6">
-      {education.map((edu) => (
-        <div>
-          <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-1">
-            <h3 class="text-lg font-semibold" style="color: var(--color-fg);">
-              {edu.school}
-            </h3>
-            <span class="text-xs font-mono" style="color: var(--color-fg-subtle);">
-              {edu.dates}
-            </span>
-          </div>
-          <p class="text-sm mb-1" style="color: var(--color-accent);">
-            {edu.degree} · {edu.location}
-          </p>
-          <p class="text-sm" style="color: var(--color-fg-muted);">{edu.detail}</p>
-        </div>
-      ))}
-    </div>
+    <ul class="space-y-2 text-base" style="color: var(--color-fg);">
+      <li>Columbia University</li>
+      <li>Indian Institute of Technology, Kanpur</li>
+    </ul>
   </section>
 
   <section class="container-narrow pb-12">
@@ -187,7 +60,7 @@ const skills = {
     <div class="space-y-5">
       {Object.entries(skills).map(([category, items]) => (
         <div>
-          <h3 class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--color-fg-subtle);">
+          <h3 class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--color-fg-muted);">
             {category}
           </h3>
           <div class="flex flex-wrap gap-1.5">
@@ -198,11 +71,10 @@ const skills = {
     </div>
   </section>
 
-  <section class="container-narrow pb-12">
+  <section class="container-narrow pb-16">
     <h2 class="font-semibold tracking-tight mb-6 pt-8" style="border-top: 1px solid var(--color-border);">
       Publication
     </h2>
-
     <div class="prose">
       <p>
         <strong>Record High Magnetic Anisotropy in Three-Coordinate Mn<sup>III</sup> and Cr<sup>II</sup> Complexes: A Theoretical Perspective.</strong>

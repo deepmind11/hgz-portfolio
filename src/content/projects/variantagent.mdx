@@ -21,13 +21,6 @@ domain:
   - Clinical genomics
   - Variant interpretation
   - ACMG / AMP guidelines
-targetCompanies:
-  - Tempus AI
-  - Color Health
-  - Variantyx
-  - GeneDx
-  - Invitae
-  - BillionToOne
 started: "2026-03-15"
 ---
 
@@ -63,6 +56,4 @@ The classification step is *not* an LLM call. The LLM reasons about which ACMG c
 
 ## Why this matters
 
-I worked on the variant interpretation pipeline at BillionToOne, where I built an automated variant validation system that filtered 100% of false positive VarDict indel calls. VariantAgent is what the next generation of that work looks like — not a single model swap, but a coordinated system of agents that mirrors how human variant analysts actually think.
-
-For companies like Tempus, Color, GeneDx, and Variantyx that are scaling clinical interpretation throughput, this is the architecture that gets you from "LLM does some of the work" to "LLM-driven workflow that an analyst can sign off on."
+Clinical variant interpretation is the kind of workflow where a pure LLM is dangerous and a pure rule engine is incomplete. VariantAgent is my attempt at the hybrid: LLMs read evidence, a deterministic ACMG rule engine classifies, and the whole pipeline is auditable end to end. The goal is a system an analyst could actually sign off on, not a demo.
