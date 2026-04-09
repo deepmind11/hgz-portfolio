@@ -12,7 +12,12 @@
     "astro": "astro",
     "deploy": "astro build && wrangler deploy",
     "deploy:dryrun": "astro build && wrangler deploy --dry-run --outdir=.wrangler-out",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "rag:build": "node scripts/build-rag.mjs",
+    "rag:upload": "node scripts/build-rag.mjs --upload",
+    "rag:test": "node scripts/test-rag.mjs",
+    "evals": "node evals/run.mjs",
+    "evals:prod": "node evals/run.mjs --url=https://hgz-portfolio.harshitghosh.workers.dev"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.8",

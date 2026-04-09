@@ -36,7 +36,7 @@ function corsHeaders(origin: string | null): HeadersInit {
 	return {
 		"Access-Control-Allow-Origin": allow,
 		"Access-Control-Allow-Methods": "POST, OPTIONS",
-		"Access-Control-Allow-Headers": "Content-Type",
+		"Access-Control-Allow-Headers": "Content-Type, X-Eval-Token",
 		Vary: "Origin",
 	};
 }
@@ -84,12 +84,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	// ---------- rate limit ----------
 
+	// Eval / CI bypass: signed header unlocks the rate limiter.
+	// EVAL_TOKEN is a Cloudflare secret, only known to the eval runner.
+	const evalToken = request.headers.get("x-eval-token");
+	const evalBypass =
+		env.EVAL_TOKEN && evalToken && evalToken === env.EVAL_TOKEN;
+
 	const ip =
 		request.headers.get("cf-connecting-ip") ??
 		request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
 		"unknown";
 	const ipHash = await hashIp(ip);
-	const limit = await checkRateLimit(env.DB, ipHash);
+	const limit = evalBypass
+		? { allowed: true, remaining: 999, resetSeconds: 0, dailyRemaining: 999 }
+		: await checkRateLimit(env.DB, ipHash);
 
 	if (!limit.allowed) {
 		return jsonError(
@@ -111,7 +119,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	let chunks;
 	try {
 		const queryVector = await embed(env.AI, lastUser.content);
-		chunks = await retrieve(env.VECTORIZE, queryVector, 5);
+		chunks = await retrieve(env.VECTORIZE, queryVector, 8);
 	} catch (e) {
 		console.error("RAG error:", e);
 		return jsonError(500, "Retrieval failed", cors);

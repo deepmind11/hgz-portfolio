@@ -33,7 +33,7 @@ export async function streamChat(opts: OpenRouterOptions): Promise<Response> {
 			Authorization: `Bearer ${opts.apiKey}`,
 			"Content-Type": "application/json",
 			"HTTP-Referer": opts.siteUrl ?? "https://hgz-portfolio.harshitghosh.workers.dev",
-			"X-Title": opts.siteName ?? "Harshit Ghosh — Portfolio",
+			"X-Title": opts.siteName ?? "Harshit Ghosh Portfolio",
 		},
 		body: JSON.stringify({
 			model: opts.model ?? DEFAULT_MODEL,

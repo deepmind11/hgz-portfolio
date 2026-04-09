@@ -1,6 +1,6 @@
 # Experience: Bioinformatics Associate, Oncology — BillionToOne Inc
 
-From November 2024 to March 2026, Harshit worked as a Bioinformatics Associate in Oncology at BillionToOne Inc in Menlo Park, California. BillionToOne is a molecular diagnostics company developing quantitative molecular counting technology for prenatal testing and oncology, operating under CAP/CLIA accreditation and New York State Department of Health (NYSDOH) regulations.
+Harshit's most recent full-time role was at BillionToOne Inc. He worked as a Bioinformatics Associate in Oncology from November 2024 to March 2026, based in Menlo Park, California. BillionToOne is a molecular diagnostics company: it develops quantitative molecular counting technology for prenatal testing and oncology, operating under CAP/CLIA laboratory accreditation and New York State Department of Health (NYSDOH) regulations. The oncology team he was part of develops liquid biopsy assays for cancer detection and monitoring.
 
 He worked on two oncology assays: NorthStar Select, a hybrid-capture cfDNA variant detection assay using unique molecular identifiers (UMI), and NorthStar Response, a methylation-based cancer monitoring assay using multiplex PCR following bisulfite conversion.
 

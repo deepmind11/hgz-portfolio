@@ -1,0 +1,100 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build, deploy, eval gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Cloudflare Workers
+        id: deploy
+        run: npx wrangler deploy
+
+      - name: Wait for propagation
+        run: sleep 10
+
+      - name: Run eval gate
+        env:
+          EVAL_TOKEN: ${{ secrets.EVAL_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          node evals/run.mjs \
+            --url=https://hgz-portfolio.harshitghosh.workers.dev \
+            --out=eval-report.json \
+            --fail-threshold=0.9
+
+      - name: Upload eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.run_number }}
+          path: eval-report.json
+          retention-days: 30
+
+      - name: Summarize evals in job summary
+        if: always()
+        run: |
+          if [ -f eval-report.json ]; then
+            node -e "
+              const r = JSON.parse(require('fs').readFileSync('eval-report.json','utf8'));
+              const s = r.summary;
+              const lines = [
+                '## Eval gate report',
+                '',
+                '- **Pass rate:** ' + s.passed + '/' + s.total + ' (' + (s.passRate * 100).toFixed(1) + '%)',
+                '- **Gate:** ' + (s.passed_gate ? ':white_check_mark: PASSED' : ':x: FAILED'),
+                '- **Wall time:** ' + (s.wallMs / 1000).toFixed(1) + 's',
+                '- **Blocking failures:** ' + (s.blockingFailures.length || 'none'),
+                '',
+                '### By category',
+                '| Category | Passed |',
+                '|----------|--------|',
+              ];
+              for (const [cat, stats] of Object.entries(s.byCategory)) {
+                lines.push('| ' + cat + ' | ' + stats.passed + '/' + stats.total + ' |');
+              }
+              lines.push('');
+              lines.push('### Failed cases');
+              const fails = r.cases.filter(c => !c.passed);
+              if (fails.length === 0) {
+                lines.push('None.');
+              } else {
+                for (const c of fails) {
+                  lines.push('- **' + c.name + '** (' + c.criticality + '): ' + c.question);
+                }
+              }
+              require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+            "
+          fi
