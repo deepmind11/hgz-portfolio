@@ -21,5 +21,11 @@ export default defineConfig({
   integrations: [react(), mdx(), sitemap()],
   adapter: cloudflare({
     imageService: "compile",
+    // Disable the wrangler remote proxy at build time. The proxy requires
+    // CF auth, which we don't always have in CI. Local dev still uses it
+    // if you set `platformProxy: { enabled: true }` explicitly.
+    platformProxy: {
+      enabled: false,
+    },
   }),
 });
