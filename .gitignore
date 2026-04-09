@@ -29,6 +29,10 @@ rag-vectors.ndjson
 # Local eval runs — CI uploads to artifacts, local runs don't need to be committed
 eval-report.json
 
+# Python cache (Modal functions)
+__pycache__/
+*.pyc
+
 # macOS-specific files
 .DS_Store
 

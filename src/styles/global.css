@@ -1015,9 +1015,34 @@
   border-color: oklch(0.78 0.16 40 / 0.4);
   color: oklch(0.85 0.14 40);
 }
+.demo-span-lang {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 0.0625rem 0.3125rem;
+  margin-right: 0.375rem;
+  border-radius: 3px;
+  background-color: oklch(1 0 0 / 0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 .demo-audio {
   width: 100%;
   margin-top: 0.75rem;
+}
+.demo-speech-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.demo-voice-info {
+  font-size: 0.75rem;
+  color: var(--color-fg-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
 }
 
 @media (max-width: 640px) {
