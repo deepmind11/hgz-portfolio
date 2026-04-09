@@ -9,5 +9,21 @@
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"ai": {
+		"binding": "AI"
+	},
+	"vectorize": [
+		{
+			"binding": "VECTORIZE",
+			"index_name": "hgz-portfolio-rag"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "hgz-portfolio-db",
+			"database_id": "017add37-03c7-4010-9a2e-0c5d64368f23"
+		}
+	]
 }

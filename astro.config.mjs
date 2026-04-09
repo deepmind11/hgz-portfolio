@@ -9,8 +9,8 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://hgz.xo.je",
-  output: "static",
+  site: "https://hgz-portfolio.harshitghosh.workers.dev",
+  output: "server",
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "viewport",
